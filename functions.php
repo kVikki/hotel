@@ -8,13 +8,12 @@ add_image_size( 'event_thumb', 800, 571, true );
 add_image_size( 'single_thumb', 1900, 1267, true );
 add_image_size( 'slider_thumb', 1121, 700, true );
 
-if (!function_exists('render_partial')) {
-	function render_partial($template, $render_data)
-	{
-			extract($render_data);
-			require locate_template($template);
-	}
+/* removing <p> tags of text editor */
+//Remove WPAUTOP from ACF TinyMCE Editor
+function acf_wysiwyg_remove_wpautop() {
+	remove_filter('acf_the_content', 'wpautop' );
 }
+add_action('acf/init', 'acf_wysiwyg_remove_wpautop');
 
 /*
  * Enqueue scripts and styles.

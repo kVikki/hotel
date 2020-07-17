@@ -67,7 +67,6 @@
 							</form>
 						</div>
 
-
 					</div>
 
 					<div class="row pt-5">
@@ -80,11 +79,9 @@
 								the_field('copy_rights','options');
 								the_field('copy_template','options');
 							?>
-								<i class="fa fa-heart" aria-hidden="true"></i>
-								<?php the_field('by_text','options'); ?>
-								<a href="<?= the_field('author_url','options');?>" target="_blank" >
-									<?php	the_field('author_name','options');?>
-								</a>
+							<a href="<?= the_field('author_url','options');?>" target="_blank" > 
+								<?php	the_field('author_name','options');?>
+							</a>
 							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						</p>
 
