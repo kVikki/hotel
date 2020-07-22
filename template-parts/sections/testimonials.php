@@ -9,25 +9,25 @@
         </div>
         <div class="row">
           <div class="js-carousel-2 owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
-            <!-- Заменить повторителем -->
+            <!--почему не все отображается? -
+             только после смены формата экрана отображается весь комментарий 
+            если отзывов более 3 и они перелистываются автоматически - ошибка исчезает
+            -->
           <?php
             $testimonials = get_posts( array(
               'post_type' => 'testimonial',
               
             ) );
 
-
             if($testimonials):  
               foreach( $testimonials as $post ):
                 setup_postdata($post);?>
-                 
-                 <div class="testimonial text-center slider-item">
+                  <div class="testimonial text-center slider-item">
                     <div class="author-image mb-3">
                       <img src="<?= the_post_thumbnail_url();?>" alt="Image placeholder" class="rounded-circle mx-auto">
                     </div>
                     <blockquote>
-
-                      <p>&ldquo;</p><?php the_content();?>
+                      <?php the_content();?>                       
                     </blockquote>
                     <p><em>&mdash; <?php the_title();?></em></p>
                   </div> 
@@ -35,7 +35,6 @@
               endforeach;
               wp_reset_postdata(); // сброс
             endif;
-
 
           ?>
 

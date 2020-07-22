@@ -1,134 +1,77 @@
-        <div class="food-menu-tabs" data-aos="fade">
-          <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
+<div class="food-menu-tabs" data-aos="fade">
+  <?php
+    $menus = get_field('menu_category');
+    
+    if( $menus ):
+      /*  Making array out of array*/
+      $category_titles = array_column($menus, 'category_title');
+      /* ****** */
+      ?>
+      <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
+        <?php
+          $active='active';
+          $aria_selected = 'true';
+          foreach( $category_titles as $category_title):?>
             <li class="nav-item">
-              <a class="nav-link active letter-spacing-2" id="mains-tab" data-toggle="tab" href="#mains" role="tab" aria-controls="mains" aria-selected="true">Mains</a>
+              <a class="nav-link letter-spacing-2 <?=$active?>"
+                  id="<?=$category_title.'-tab'?>"
+                  data-toggle="tab" href="<?='#'.$category_title?>"
+                  role="tab" aria-controls="<?=$category_title?>"
+                  aria-selected="<?=$aria_selected;?>">
+                <?php
+                  echo $category_title;
+                  $active = ''; /* убираем 'active' для следующих */ 
+                  $aria_selected = 'false';
+                ?>
+              </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link letter-spacing-2" id="desserts-tab" data-toggle="tab" href="#desserts" role="tab" aria-controls="desserts" aria-selected="false">Desserts</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link letter-spacing-2" id="drinks-tab" data-toggle="tab" href="#drinks" role="tab" aria-controls="drinks" aria-selected="false">Drinks</a>
-            </li>
-          </ul>
-          <div class="tab-content py-5" id="myTabContent">
-            
-            
-            <div class="tab-pane fade show active text-left" id="mains" role="tabpanel" aria-labelledby="mains-tab">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$20.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Murgh Tikka Masala</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$35.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Fish Moilee</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$15.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Safed Gosht</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$10.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">French Toast Combo</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$8.35</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Vegie Omelet</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$22.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Chorizo &amp; Egg Omelet</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
-              </div>
-              
+            <?php
+          endforeach;
+        ?>
+      </ul>
 
-            </div> <!-- .tab-pane -->
+      <div class="tab-content py-5" id="myTabContent">
 
-            <div class="tab-pane fade text-left" id="desserts" role="tabpanel" aria-labelledby="desserts-tab">
+        <?php
+          $active_show ='active show';
+          foreach( $category_titles as $category_title ): 
+            $menu_items = array_column($menus,'menu_items', 'category_title' );
+            ?>
+            <div class="tab-pane fade text-left <?=$active_show;?>" id="<?=$category_title?>" role="tabpanel" aria-labelledby="<?=$category_title.'-tab'?>">
               <div class="row">
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$11.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Banana Split</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$72.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Sticky Toffee Pudding</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$26.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Pecan</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$42.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Apple Strudel</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$7.35</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Pancakes</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$22.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Ice Cream Sundae</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
+                <?php
+                  $active_show ='';
+                  $items=$menu_items[$category_title];                         
+                  foreach( $items as $item ):?>
+                    <div class="col-md-6">
+                      <div class="food-menu mb-5">                               
+                        <span class="d-block text-primary h4 mb-3">
+                          <?= $item['item_price'];?>
+                        </span>
+                        <h3 class="text-white">
+                          <a href="#" class="text-white">
+                            <?= $item['item_title'];?>
+                          </a>
+                        </h3>
+                        <p class="text-white text-opacity-7">
+                          <?= $item['item_description'];?>
+                        </p>
+                      </div>
+                    </div>
+                    <?php
+                  endforeach;
+                ?>
               </div>
-            </div> <!-- .tab-pane -->
-            <div class="tab-pane fade text-left" id="drinks" role="tabpanel" aria-labelledby="drinks-tab">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$32.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Spring Water</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$14.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Coke, Diet Coke, Coke Zero</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$93.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Orange Fanta</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$18.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Lemonade, Lemon Squash</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$38.35</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Sparkling Mineral Water</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                  <div class="food-menu mb-5">
-                    <span class="d-block text-primary h4 mb-3">$69.00</span>
-                    <h3 class="text-white"><a href="#" class="text-white">Lemon, Lime &amp; Bitters</a></h3>
-                    <p class="text-white text-opacity-7">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                  </div>
-                </div>
-              </div>
-            </div> <!-- .tab-pane -->
-          </div>
-        </div>
+            </div>
+            <?php   
+          endforeach;
+        ?> 
+
+      </div>
+      <?php  
+    endif;
+          
+  ?>
+</div>
+
+             

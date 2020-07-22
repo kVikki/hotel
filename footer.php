@@ -36,33 +36,22 @@
 						</div>
 
 						<!-- Contacts -->
-						<div class="col-md-3 mb-5 pr-md-5 contact-info">
-							<?php 
-								$contacts = get_field('contacts_menu', 'options');
-								if( $contacts):
-									foreach( $contacts as $contact ):?>
-										<p>
-											<span class="d-block">
-												<span class="<?= 'ion-ios-'.$contact['contact_icon'];?> h5 mr-3 text-primary"></span>
-													<?=$contact['contact_name']?>
-												</span>
-											<span>
-												<?=$contact['contact_info']?>
-											</span>
-										</p>
-										<?php
-									endforeach;
-								endif;			
-							?>
-						</div>
+						<?php
+							$footer = 'footer';
+							require (locate_template('template-parts/parts/contacts.php'));
+						?>
 
 						<!-- News send subscription -->
 						<div class="col-md-3 mb-5">
-							<p>Sign up for our newsletter</p>
+							<p>
+								Sign up for our newsletter
+							</p>
 							<form action="#" class="footer-newsletter">
 								<div class="form-group">
 									<input type="email" class="form-control" placeholder="Email...">
-									<button type="submit" class="btn"><span class="fa fa-paper-plane"></span></button>
+									<button type="submit" class="btn">
+										<span class="fa fa-paper-plane"></span>
+									</button>
 								</div>
 							</form>
 						</div>

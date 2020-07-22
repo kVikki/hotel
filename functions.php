@@ -48,7 +48,7 @@ function hotel_scripts_and_styles() {
 		wp_enqueue_script( 'hotel-bootstrap.min', get_template_directory_uri().'/assets/js/bootstrap.min.js', array(), null, true );
 		wp_enqueue_script( 'hotel-bootstrap-datepicker', get_template_directory_uri().'/assets/js/bootstrap-datepicker.js', array(), null, true );
 		
-		wp_enqueue_script( 'hotel-owl.carousel.min', get_template_directory_uri().'/assets/js/owl.carousel.min.js', array(), null, true );
+		wp_enqueue_script( 'hotel-owl.carousel.min', get_template_directory_uri().'/assets/js/owl.carousel.min.js', array(), null, false );
 		wp_enqueue_script( 'hotel-aos', get_template_directory_uri().'/assets/js/aos.js', array(), null, true );
 		wp_enqueue_script( 'hotel-popper.min', get_template_directory_uri().'/assets/js/popper.min.js', array(), null, true );
 
@@ -63,11 +63,42 @@ function hotel_scripts_and_styles() {
 // Register navigation menus uses wp_nav_menu 
 add_action( 'after_setup_theme', function(){
 	register_nav_menus( [
-		'expanded' => 'Выпадающее меню',
-		'social' => 'Меню соцсетей',
+		'expanded' 		=> 'Выпадающее меню',
+		'restaurant' 	=> 'Меню ресторана'
 		
 		] );
 } );
+
+// Добавляем классы пунктам
+add_filter( 'nav_menu_css_class', 'change_menu_item_css_classes', 10, 4 );
+function change_menu_item_css_classes( $classes, $item, $args, $depth ) {
+	if ( $args->theme_location === 'restaurant' ):
+		$classes = [ 'nav-item' ];
+	else:
+		$classes = [];
+	endif;
+
+	return $classes;
+}
+
+
+// Добавляем классы ссылкам
+add_filter( 'nav_menu_link_attributes', 'filter_nav_menu_link_attributes', 10, 4 );
+function filter_nav_menu_link_attributes( $atts, $item, $args, $depth ) {
+	if ( $args->theme_location === 'restaurant'):
+		$class = 'nav-link letter-spacing-2';
+	
+		/* 	if ( $item->current ):
+				$class .= 'active show';
+				
+		endif; */
+		$atts['class'] = isset( $atts['class'] ) ? "{$atts['class']} $class" : $class;
+	endif;
+
+return $atts;
+}
+
+
 
 
 if( function_exists('acf_add_options_page') ) {
@@ -176,6 +207,40 @@ function testimonial_posts_init(){
 		'menu_icon' 				 => '',
 		'menu_position'      => 8,
 		'taxonomies'         => array( 'category',  'post_tag' ),
-		'supports'           => array( 'title', 'editor' ,'thumbnail',  'comments')
+		'supports'           => array( 'title', 'editor' ,'thumbnail')
+	) );
+}
+
+
+add_action('init', 'restaurant_posts_init');
+function restaurant_posts_init(){
+	register_post_type('restaurant', array(
+			'labels'             => array(
+			'name'               => 'Ресторан', // Основное название типа записи
+			'singular_name'      => 'Меню', // отдельное название записи типа 
+			'add_new'            => 'Добавить новую позицию',
+			'add_new_item'       => 'Добавить ',
+			'edit_item'          => 'Редактировать',
+			'new_item'           => 'Нова позиция',
+			'view_item'          => 'Посмотреть меню',
+			'search_items'       => 'Найти меню ',
+			'not_found'          => 'Позицийне найдено',
+			'not_found_in_trash' => 'В корзине позиций не найдено',
+      'menu_name'          => 'Ресторан'
+
+		  ),
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'query_var'          => true,
+		'rewrite'            => true,
+		'capability_type'    => 'post',
+		'has_archive'        => true,
+		'hierarchical'       => false,
+		'menu_icon' 				 => '',
+		'menu_position'      => 8,
+		'taxonomies'         => array( 'category',  'post_tag' ),
+		'supports'           => array( 'title')
 	) );
 }

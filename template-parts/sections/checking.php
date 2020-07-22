@@ -1,4 +1,16 @@
-<section class="section bg-light pb-0"  >
+<?php
+  if(is_front_page()):
+    $section_class= "bg-light pb-0";
+  else: 
+    $section_class= "pb-4";
+  endif;
+
+?>
+
+
+
+
+<section class="section <?= $section_class;?>"  >
       <div class="container" id="next">
        
         <div class="row check-availabilty" >

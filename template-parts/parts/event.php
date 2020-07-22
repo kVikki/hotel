@@ -2,8 +2,7 @@
 
   <div class="media media-custom d-block mb-4 h-100">
     <a href="<?php the_permalink()?>" class="mb-4 d-block">
-      <?php the_post_thumbnail('event_thumb', array('class'=>'img-fluid'));?>
-      <!-- <img src="images/img_1.jpg" alt="Image placeholder" class="img-fluid"> -->
+      <?php the_post_thumbnail('event_thumb', array('class'=>'img-fluid'));?>      
     </a>
     <div class="media-body">
       <span class="meta-post"><?php the_field('event_date');?></span>

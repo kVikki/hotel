@@ -26,7 +26,7 @@
           break;
     case  'menu':
           $section_class='bg-image overlay';
-          $bg_style='background-color: red';
+          $bg_style='background-image:url('. get_field('menu_bg').')';
           $white_style = 'text-white';
           $text='menu' ;
           $data_aos='fade';
@@ -51,10 +51,13 @@
         </p>
       </div>
     </div>
-    
-    <div class="row">
-    
-      <?php         
+
+    <?php
+      if($section!='menu'):?>
+        <div class="row">
+        <?php
+      endif;
+
         /*Проверяем, совпадает ли секция с произвольным типом записи  */
         if(in_array($section,$post_types)): 
           /* Если совпадает, выводит архив типа данных, */
@@ -63,7 +66,7 @@
           $parts=get_posts( array(
             'post_type' => $section,
           ) );
-         
+        
           foreach( $parts as $post ):
             setup_postdata( $post );
             get_template_part('template-parts/parts/'.$section);
@@ -73,9 +76,11 @@
         else: /*в противном случае будем выводить конкретную секцию*/
           get_template_part('template-parts/parts/'.$section); 
         endif; 
-      ?>
-      
-    </div>
+        
+      if($section!='menu'):?>
+        <div >
+      <?php endif;
+    ?>  
     
   </div>
 </section>

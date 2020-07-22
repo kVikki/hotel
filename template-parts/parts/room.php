@@ -9,13 +9,10 @@
 ?>
 
 
-
-
 <div class="col-md-6 col-lg-4" data-aos="fade-up">
   <a href="<?php the_permalink()?>" class="room">
     <figure class="<?=$figure_class;?> ">
-     <?php
-
+      <?php
         the_post_thumbnail($thumb_size, array('class'=>'img-fluid mb-3'));
       ?>
     </figure>
