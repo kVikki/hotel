@@ -22,6 +22,20 @@ Normalizing styles have been helped along thanks to the fine work of
 Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 */
 
+.invalide {
+	border: 2px solid red;
+	color: red;
+	background-color: white;
+}
+
+div.wrong-input {
+	color: red;
+}
+div.subscribed {
+	color: white;
+}
+
+
 
 body {
 	background: #fff;

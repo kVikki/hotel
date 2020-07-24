@@ -15,82 +15,86 @@
         </div>
     </section>
 			
-			<footer class="section footer-section">
-				<div class="container">
-					<div class="row mb-4">
-						<div class="col-md-3 mb-5">
-							<ul class="list-unstyled link">
-								<li><a href="#">About Us</a></li>
-								<li><a href="#">Terms &amp; Conditions</a></li>
-								<li><a href="#">Privacy Policy</a></li>
-								<li><a href="#">Rooms</a></li>
-							</ul>
-						</div>
-						<div class="col-md-3 mb-5">
-							<ul class="list-unstyled link">
-								<li><a href="#">The Rooms &amp; Suites</a></li>
-								<li><a href="#">About Us</a></li>
-								<li><a href="#">Contact Us</a></li>
-								<li><a href="#">Restaurant</a></li>
-							</ul>
-						</div>
-
-						<!-- Contacts -->
-						<?php
-							$footer = 'footer';
-							require (locate_template('template-parts/parts/contacts.php'));
-						?>
-
-						<!-- News send subscription -->
-						<div class="col-md-3 mb-5">
-							<p>
-								Sign up for our newsletter
-							</p>
-							<form action="#" class="footer-newsletter">
-								<div class="form-group">
-									<input type="email" class="form-control" placeholder="Email...">
-									<button type="submit" class="btn">
-										<span class="fa fa-paper-plane"></span>
-									</button>
-								</div>
-							</form>
-						</div>
-
-					</div>
-
-					<div class="row pt-5">
+		<footer class="section footer-section">
+			<div class="container">
+				<div class="row mb-4">
+					<div class="col-md-6 mb-5" style='columns: 2'>
 						
-						<!-- Copyright -->
-						<p class="col-md-6 text-left">
 							<?php
-								the_field('copy_text','options');
-								the_time('Y ');
-								the_field('copy_rights','options');
-								the_field('copy_template','options');
+								wp_nav_menu( [
+											'theme_location' 	=> 'footer',
+											'container'		 		=> false,
+											'menu_class'      => 'list-unstyled link',
+											'items_wrap'      => '<ul class="%2$s">%3$s</ul>'
+										] ); 
 							?>
-							<a href="<?= the_field('author_url','options');?>" target="_blank" > 
-								<?php	the_field('author_name','options');?>
-							</a>
-							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						</p>
-
-							<!-- Social buttons -->
-						<p class="col-md-6 text-right social">
-							<?php 
-								$social_nets = get_field('social_buttons', 'options');
-								if( $social_nets):
-									foreach( $social_nets as $social_net ):?>
-										<a href="<?=$social_net['social_url']?>">
-											<span class="<?='fa fa-'.$social_net['social_net_name']?>">	</span>
-										</a>
-									<?php
-									endforeach;
-								endif;			
-							?>
-						</p>
+							
 					</div>
+
+					<!-- Contacts -->
+					<?php
+						$footer = 'footer';
+						require (locate_template('template-parts/parts/contacts.php'));
+					?>
+
+					<!-- News send subscription -->
+					<div class="col-md-3 mb-5">
+						<p>
+						<?= get_field('news_title','options');?>
+						<!-- 	Sign up for our newsletter -->
+						</p>
+						<form novalidate id="newsletters" action="<?= admin_url('admin-ajax.php?action=newsletters')?>"
+							 class="footer-newsletter" 	method="post">
+							
+							<div class="form-group">
+								<input type="email" id="email" name="email" class="form-control validates-as-required" placeholder="<?= get_field('news_placeholder','options');?>">
+								<button type="submit" class="btn" id="submit">
+									<span class="fa fa-<?= get_field('send_icon','options');?>"></span>
+								</button>
+							</div>
+						</form>
+					</div>
+
+
+					
+																
+
+
 				</div>
-			</footer>
+
+				<div class="row pt-5">
+					
+					<!-- Copyright -->
+					<p class="col-md-6 text-left">
+						<?php
+							the_field('copy_text','options');
+							the_time('Y ');
+							the_field('copy_rights','options');
+							the_field('copy_template','options');
+						?>
+						<a href="<?= the_field('author_url','options');?>" target="_blank" > 
+							<?php	the_field('author_name','options');?>
+						</a>
+						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+					</p>
+
+						<!-- Social buttons -->
+					<p class="col-md-6 text-right social">
+						<?php 
+							$social_nets = get_field('social_buttons', 'options');
+							if( $social_nets):
+								foreach( $social_nets as $social_net ):?>
+									<a href="<?=$social_net['social_url']?>">
+										<span class="<?='fa fa-'.$social_net['social_net_name']?>">	</span>
+									</a>
+								<?php
+								endforeach;
+							endif;			
+						?>
+					</p>
+				</div>
+			</div>
+		</footer>
 			
 	<?php wp_footer(); ?>
 

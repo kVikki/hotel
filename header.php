@@ -34,17 +34,17 @@
               <nav role="navigation">
                 <div class="container">
                   <div class="row full-height align-items-center">
-                    <ul>
-                      <?php
-												wp_nav_menu( [
-															'theme_location' 	=> 	'expanded',
-															'container'		 		=> 'div',
-															'container_class' => 'col-md-6 mx-auto',
-															'menu_class'      => 'list-unstyled menu',
-															'items_wrap'      => '<ul class="%2$s">%3$s</ul>'
-														] ); 
-											?>
-                    </ul>
+                    <div class="col-md-6 mx-auto">
+                      <ul class="list-unstyled menu">
+                        <?php
+                          wp_nav_menu( [
+                                'theme_location' 	=> 	'expanded',
+                                'container'		 		=> false,
+                                'items_wrap'      => '%3$s'
+                              ] ); 
+                        ?>
+                      </ul>
+                    </div>
                   </div>           
                 </div>
               </nav>
