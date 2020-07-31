@@ -10,11 +10,10 @@
     $top_bg_img = get_field('top_section_bg', 'options');
   endif;
 
-  
+  $post_type=get_post_type();
   
   if(is_single()):
-    $section_title = get_field(get_post_type().'_section_title','options');
-    
+    $section_title = get_field($post_type.'_section_title','options');  
   else:
      $section_title = wp_title('', false); 
   endif; 
@@ -35,7 +34,12 @@
             <?php
           else: ?>            
             <h1 class="heading mb-3">
-              <?= $section_title;?>
+              <?php 
+                if($post_type=='post'):
+                  the_title();
+                else: echo   $section_title;           
+                endif;
+              ?>
             </h1>
             <ul class="custom-breadcrumbs mb-4">
               <li>
@@ -44,7 +48,13 @@
                 </a>
               </li>
               <li>&bullet;</li>
-              <li> <?= $section_title;?> </li>
+              <li>
+                 <?php
+                 if($post_type=='post'):
+                    the_title();
+                  else: echo   $section_title;           
+                  endif;?> 
+              </li>
             </ul>
 
           <?php

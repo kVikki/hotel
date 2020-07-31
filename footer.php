@@ -7,7 +7,7 @@
 							</h2>
             </div>
             <div class="col-12 col-md-6 text-center text-md-right" data-aos="fade-up" data-aos-delay="200">
-              <a href="reservation.html" class="btn btn-outline-white-primary py-3 text-white px-5">
+              <a href="<?=get_field('reservation_link','options')?>" class="btn btn-outline-white-primary py-3 text-white px-5">
 								 <?= the_field('reservation_btn', 'options')?>
 							</a>
             </div>
@@ -47,7 +47,7 @@
 							 class="footer-newsletter" 	method="post">
 							
 							<div class="form-group">
-								<input type="email" id="email" name="email" class="form-control validates-as-required" placeholder="<?= get_field('news_placeholder','options');?>">
+								<input type="email" id="email_newsletters" name="email_newsletters" class="form-control validates-as-required" placeholder="<?= get_field('news_placeholder','options');?>">
 								<button type="submit" class="btn" id="submit">
 									<span class="fa fa-<?= get_field('send_icon','options');?>"></span>
 								</button>

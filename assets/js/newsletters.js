@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
   var form = $('#newsletters');
-  var input=$('#email');
+  var input=$('#email_newsletters');
   console.log(input.val());
     
 

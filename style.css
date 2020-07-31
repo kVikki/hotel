@@ -28,10 +28,10 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	background-color: white;
 }
 
-div.wrong-input {
+.wrong-input {
 	color: red;
 }
-div.subscribed {
+.subscribed {
 	color: white;
 }
 
@@ -1306,8 +1306,8 @@ body {
 		display: inline-block; }
 		.custom-pagination ul li a {
 		  background: #fff;
-		  border-radius: 50%;
-		  border: 1px solid transparent; }
+			border-radius: 50%;
+			border: 0.5px solid #f7f7f7;}
 		  .custom-pagination ul li a:hover {
 			border: 1px solid #d9d9d9;
 			-webkit-box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.1);
@@ -1319,7 +1319,8 @@ body {
 		  height: 47px;
 		  font-size: 1.2rem;
 		  line-height: 47px; }
-		.custom-pagination ul li.active span {
+		.custom-pagination ul li.active span,
+		.custom-pagination ul li span.current {
 		  background: #ffba5a;
 		  color: #fff;
 		  border-radius: 50%; }

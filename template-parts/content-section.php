@@ -3,24 +3,23 @@
     case 'event':
           $section_class='blog-post-entry bg-light';
           $white_style = '';
-         /*  $text = 'text'; */
           $data_aos='fade-up';
           $data_aos_delay= '';
+          $numberposts = 3;
           break;
     case 'room':
           $data_aos='fade';
           $text='text text' ;
           $data_aos_delay= 100;
+          $numberposts = 3;
           break;
     case 'great-offer':
           $section_class='bg-light'; 
-         /*  $text='rooms text' ; */
           $data_aos='fade';
-           $data_aos_delay= '';
+          $data_aos_delay= '';
           break;
     case 'photos':
           $section_class='slider-section bg-light'; 
-         /*  $text='photos text' ; */
           $data_aos='fade-up';
           $data_aos_delay= 100;
           break;
@@ -29,7 +28,6 @@
           $id = 'menu';
           $bg_style='background-image:url('. get_field('menu_bg').')';
           $white_style = 'text-white';
-          /* $text='menu' ; */
           $data_aos='fade';
           $data_aos_delay= 100;
           break;    
@@ -66,9 +64,24 @@
           /* Если совпадает, выводит архив типа данных, */
 
           global $post;
-          $parts=get_posts( array(
-            'post_type' => $section,
-          ) );
+          if (is_front_page() && $section =='event'  ):
+            $parts=get_posts( array(
+              'post_type' => $section,
+              'meta_key'  => 'event_date',
+              'orderby'   => 'meta_value_num',
+              'order'     => 'DESC',
+              'numberposts' => $numberposts,
+            ) );
+          elseif (is_front_page() && $section =='room' ):
+            $parts=get_posts( array(
+              'post_type' => $section,              
+              'numberposts' => $numberposts,
+            ) );
+          else:
+            $parts=get_posts( array(
+              'post_type' => $section,
+            ) );
+          endif;
         
           foreach( $parts as $post ):
             setup_postdata( $post );

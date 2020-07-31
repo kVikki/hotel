@@ -14,13 +14,30 @@
     <meta name="author" content="" /> -->
     
 	<?php wp_head(); ?>
+  <script>
+		 var theme_path = '<?=  get_template_directory_uri();?>';
+	</script>	
+  
   </head>
   <body>
     
     <header class="site-header js-site-header">
       <div class="container-fluid">
         <div class="row align-items-center">
-          <div class="col-6 col-lg-4 site-logo" data-aos="fade"><a href="<?=home_url(); ?>"><?= the_field('logo_link', 'options'); ?></a></div>
+          <div class="col-6 col-lg-4 site-logo" data-aos="fade">
+            <a href="<?=home_url(); ?>"><?= the_field('logo_link', 'options'); ?></a>
+            <ul class=" custom-breadcrumbs">
+              <?php 
+                $args=array(
+                  'show_flags'=>1,
+                  'force_home' =>0,
+                  'show_names'=>0
+                );
+                pll_the_languages($args);
+              ?>
+            </ul>
+
+          </div>
           <div class="col-6 col-lg-8">
 
             <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
