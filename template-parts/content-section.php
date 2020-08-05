@@ -34,8 +34,8 @@
   endswitch;
 
   $post_types = get_post_types();
-  $the_title=get_field($section.'_section_title','options');
-  $text=get_field($section.'_section_text','options');
+  $the_title=get_field($section.'_section_title',pll_current_language('slug'));
+  $text=get_field($section.'_section_text', pll_current_language('slug'));
   
 ?>
 
@@ -54,7 +54,7 @@
     </div>
 
     <?php
-      if($section!='menu'):?>
+      if($section!='menu' && $section!='great-offer'):?>
         <div class="row">
         <?php
       endif;
@@ -93,7 +93,7 @@
           get_template_part('template-parts/parts/'.$section); 
         endif; 
         
-      if($section!='menu'):?>
+      if($section!='menu' && $section!='great-offer' ):?>
         <div >
       <?php endif;
     ?>  

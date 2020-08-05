@@ -25,7 +25,7 @@
       <div class="container-fluid">
         <div class="row align-items-center">
           <div class="col-6 col-lg-4 site-logo" data-aos="fade">
-            <a href="<?=home_url(); ?>"><?= the_field('logo_link', 'options'); ?></a>
+            <a href="<?=home_url(); ?>"><?= the_field('logo_link', pll_current_language('slug')); ?></a>
             <ul class=" custom-breadcrumbs">
               <?php 
                 $args=array(
@@ -74,5 +74,7 @@
     <!-- END head -->
     
     <?php get_template_part('template-parts/sections/top-section');?>
+
+    
 		
 

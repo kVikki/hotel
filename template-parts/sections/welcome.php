@@ -1,20 +1,20 @@
 <?php
 
-  $big_img= get_field('welcome_img_big','options');
-  $small_img= get_field('welcome_img_small','options');
-  $the_title = get_field('welcome_section_title','options');
+  $big_img= get_field('welcome_img_big',pll_current_language('slug'));
+  $small_img= get_field('welcome_img_small',pll_current_language('slug'));
+  $the_title = get_field('welcome_section_title',pll_current_language('slug'));
 
-  $text_between = get_field('text_between','options');
-  $welcome_text = get_field('welcome_text','options');
+  $text_between = get_field('text_between',pll_current_language('slug'));
+  $welcome_text = get_field('welcome_text',pll_current_language('slug'));
 
 
-  $learn_more = get_field('btn_learn_more','options');
+  $learn_more = get_field('btn_learn_more',pll_current_language('slug'));
   if( $learn_more ):
     $btn_text = $learn_more['btn_text'];
     $btn_url = $learn_moreo['btn_url'];
   endif;
 
-  $welcome_video = get_field('welcome_video','options');
+  $welcome_video = get_field('welcome_video',pll_current_language('slug'));
   if( $welcome_video ):
     $video_text = $welcome_video['video_text'];
     $video_url = $welcome_video['video_url'];

@@ -16,6 +16,7 @@
         the_post_thumbnail($thumb_size, array('class'=>'img-fluid mb-3'));
       ?>
     </figure>
+    
     <div class="p-3 text-center room-info">
       <h2>
         <?php the_title();?>
@@ -33,7 +34,7 @@
   <!-- Discription -->
   <div class="p-3 text-center room-info">
     <?php
-      if(is_single()):
+      if(is_single() ):
         the_content();
       endif;
     ?>

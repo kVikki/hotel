@@ -31,12 +31,8 @@ jQuery(document).ready(function($){
       if (element.val() !="") {
         element.removeClass('invalide');
       } else {
-        element.addClass('invalide');
+        element.addClass('invalide').after('<div class="wrong-input">'+ required+ '</div>');
       }
-    });
-    
-    form.find('.form-control-required invalide').each(function () {
-      $.after('<div class="wrong-input">'+ required+ '</div>');
     });
     error = form.find('.invalide').length;
     
@@ -47,28 +43,22 @@ jQuery(document).ready(function($){
     $('input').removeClass('invalide');
     $('.wrong-input').remove();
     e.preventDefault();// предотвращаем поведение браузера по умолчанию
-    var action_url = form.attr('action');
+    var action = form.attr('action');
     
-    checkInput();
-
-    
+    checkInput();    
     
     if (error == 0){ 
       $this = $(this);
       $.ajax({ // обработчик событий
-				type: 'post', // отправляет  данные на сервер
-				url: action_url, // в качетсве ссылки мы используем заданный в аттребуте action путь
+				type: "POST", // отправляет  данные на сервер
+				url: action, // в качетсве ссылки мы используем заданный в аттребуте action путь
         dataType: "json",
-        data: $this.serialize(), // данные берем из формы, преобразовываем их в текст 
+        data: form.serialize(), // данные берем из формы, преобразовываем их в текст 
         beforeSend: function() {// данный обработчик будет вызван перед отправкой данного AJAX-запроса
           $('button[type=submit]').prop( 'disabled', true );
         },
         success: function(response){ // если все успешно обработано -
-          if (response.success==true){
-           
-            $.get( response.url, response.data, function(data) {alert( data );
-            }, "json" );
-
+          if (response.success==true){         
             alert(response.alert); //  выводим сообщение в виде окошка
             form[0].reset(); // после закрытия окошка очищаем введенные данные
           } else {

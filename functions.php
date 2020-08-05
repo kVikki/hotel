@@ -43,7 +43,6 @@ function hotel_scripts_and_styles() {
 		wp_enqueue_script( 'hotel-jquery.stellar.min', get_template_directory_uri().'/assets/js/jquery.stellar.min.js', array(), null, true );
 		wp_enqueue_script( 'hotel-jquery.fancybox.min', get_template_directory_uri().'/assets/js/jquery.fancybox.min.js', array(), null, true );
 		wp_enqueue_script( 'hotel-jquery.timepicker.min', get_template_directory_uri().'/assets/js/jquery.timepicker.min.js', array(), null, true );
-
 		
 		wp_enqueue_script( 'hotel-bootstrap.min', get_template_directory_uri().'/assets/js/bootstrap.min.js', array(), null, true );
 		wp_enqueue_script( 'hotel-bootstrap-datepicker', get_template_directory_uri().'/assets/js/bootstrap-datepicker.js', array(), null, true );
@@ -56,82 +55,97 @@ function hotel_scripts_and_styles() {
 		wp_enqueue_script( 'hotel-reservation', get_template_directory_uri().'/assets/js/reservation.js', array(), null, true );
 		wp_enqueue_script( 'hotel-newsletters', get_template_directory_uri().'/assets/js/newsletters.js', array(), null, true );
 		wp_enqueue_script( 'hotel-checking', get_template_directory_uri().'/assets/js/checking.js', array(), null, true );
-		wp_enqueue_script( 'hotel-contact_form', get_template_directory_uri().'/assets/js/contact_form.js', array(), null, true );
-
-		
-	
+		wp_enqueue_script( 'hotel-contactform', get_template_directory_uri().'/assets/js/contactform.js', array(), null, true );
 	
 }
 
 
-// Register navigation menus uses wp_nav_menu 
+// Register navigation menus 
 add_action( 'after_setup_theme', function(){
 	register_nav_menus( [
-		'expanded' 		=> 'Выпадающее меню',
-		'footer' 	=> 'Подвал сайта'
-		
+		'expanded'	=> 'Выпадающее меню',
+		'footer' 		=> 'Подвал сайта'		
 		] );
 } );
 
-// Добавляем классы пунктам
+// Добавляем классы активным пунктам меню
 add_filter( 'nav_menu_css_class', 'change_menu_item_css_classes', 10, 4 );
 function change_menu_item_css_classes( $classes, $item, $args, $depth ) {
-	if ( $args->theme_location === 'restaurant' ):
-		$classes = [ 'nav-item' ];
-	else:
-		$classes = [];
+	if ( $args->theme_location === 'expanded' ):
+		if (in_array('current-page-ancestor', $classes) || in_array('current-menu-item', $classes) ):
+			$classes[] = 'active ';
+		else:
+			$classes[] = '';
+		endif;
 	endif;
 
 	return $classes;
 }
 
 
-// Добавляем классы ссылкам
-add_filter( 'nav_menu_link_attributes', 'filter_nav_menu_link_attributes', 10, 4 );
-function filter_nav_menu_link_attributes( $atts, $item, $args, $depth ) {
-	if ( $args->theme_location === 'restaurant'):
-		$class = 'nav-link letter-spacing-2';
-	
-		/* 	if ( $item->current ):
-				$class .= 'active show';
-				
-		endif; */
-		$atts['class'] = isset( $atts['class'] ) ? "{$atts['class']} $class" : $class;
-	endif;
-
-return $atts;
-}
-
-
-if( function_exists('acf_add_options_page') ) {
+/* ACF option pages  */
+if( function_exists('acf_add_options_page') ):
 	acf_add_options_page();
-	acf_add_options_sub_page('General');
-	acf_add_options_sub_page('Forms');
-	acf_add_options_sub_page('Header');
-	acf_add_options_sub_page('Footer');
-	acf_add_options_sub_page('Translate');
-}
+
+	$languages = array( 'uk', 'en' );
+
+  foreach ( $languages as $lang ):
+    acf_add_options_sub_page( array(
+      'page_title' => 'General (' . strtoupper( $lang ) . ')',
+      'menu_title' => __('General (' . strtoupper( $lang ) . ')', 'text-domain'),
+      'menu_slug'  => "general-${lang}",
+      'post_id'    => $lang,
+      'parent'     => $parent['menu_slug']
+		) );
+		
+		acf_add_options_sub_page( array(
+      'page_title' => 'Footer (' . strtoupper( $lang ) . ')',
+      'menu_title' => __('Footer (' . strtoupper( $lang ) . ')', 'text-domain'),
+      'menu_slug'  => "footer-${lang}",
+      'post_id'    => $lang,
+      'parent'     => $parent['menu_slug']
+		) );
+		
+		acf_add_options_sub_page( array(
+      'page_title' => 'Header (' . strtoupper( $lang ) . ')',
+      'menu_title' => __('Header (' . strtoupper( $lang ) . ')', 'text-domain'),
+      'menu_slug'  => "header-${lang}",
+      'post_id'    => $lang,
+      'parent'     => $parent['menu_slug']
+		) );
+		
+		acf_add_options_sub_page( array(
+      'page_title' => 'Forms (' . strtoupper( $lang ) . ')',
+      'menu_title' => __('Forms (' . strtoupper( $lang ) . ')', 'text-domain'),
+      'menu_slug'  => "forms-${lang}",
+      'post_id'    => $lang,
+      'parent'     => $parent['menu_slug']
+    ) );
+		endforeach;
+
+
+endif;
 
 
 /* обрабатываем вводимые в формы данные  */
-if( !function_exists('test_input') ){ 
+if( !function_exists('test_input') ): 
 	function test_input($data){
 		$data = trim($data);
 		$data = stripslashes($data);
 		$data = htmlspecialchars($data);
 		return $data;
 	}
-} 
+endif;
+
 
 // форма подписки на рассылку
 add_action('wp_ajax_newsletters', 'newsletters');
 add_action('wp_ajax_nopriv_newsletters', 'newsletters');
 function newsletters(){
-	$wrong_email = get_field("wrong_email", 'options');
-	$unexisting_field = get_field("unexisting", 'options');
+	$wrong_email = get_field('wrong_email', pll_current_language('slug'));
+	$unexisting_field = get_field('unexisting', pll_current_language('slug'));
 	$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
-	
-	
+		
 	$validation_error = array();
 	
 	global $wpdb; 	
@@ -145,15 +159,13 @@ function newsletters(){
 			else: 
 				$validation_error['email_newsletters']= $unexisting_field;
 			endif;
-
-			$url = get_home_url();
 		
-			$subject = get_field("subscribe_letter_subject", 'options');
-			$message = get_field("subscribe_message", 'options');
+			$subject = get_field("subscribe_letter_subject", pll_current_language('slug'));
+			$message = get_field("subscribe_message", pll_current_language('slug'));
 			$message_send = 'Email: ' .$sender_email. "\n".
 											'Message:'. $message;
 			
-			$alert_message = get_field("subscribe_alert", 'options');;
+			$alert_message = get_field("subscribe_alert", pll_current_language('slug'));;
 		
 			$to = $sender_email;
 		
@@ -168,7 +180,7 @@ function newsletters(){
 
 					wp_die(json_encode(array('success' => true, 'alert'=> $alert_message , 'data' => $message_send)));
 				else: 					
-					$alert_message = get_field('sending_fail','options');
+					$alert_message = get_field('sending_fail',pll_current_language('slug'));
 					wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 				endif;
 			
@@ -187,15 +199,16 @@ add_action('wp_ajax_checking', 'checking');
 add_action('wp_ajax_nopriv_checking', 'checking');
 function checking(){	
 	
-	$wrong_date = get_field("wrong_date",'options');
-	$before_today = get_field("before_today_date",'options');
-	$unexisting_field =  get_field('unexisting','options');
-	$available_dates_alert = get_field('available_alert','options');
-	$unavailable_dates_alert = get_field('unavailable_alert','options');
 	$today = date('Ymd');
 	  	
 	$validation_error = array();
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
+		$wrong_date = get_field('wrong_date',pll_current_language('slug'));
+		$before_today = get_field('before_today_date',pll_current_language('slug'));
+		$unexisting_field =  get_field('unexisting',pll_current_language('slug'));
+		$available_dates_alert = get_field('available_alert',pll_current_language('slug'));
+		$unavailable_dates_alert = get_field('unavailable_alert',pll_current_language('slug'));
+		$url= get_field('reservation_link', pll_current_language('slug'));
 	
 			if(isset($_POST['checkin_date'])):
 				$checkin_date = test_input($_POST['checkin_date']);	
@@ -248,11 +261,11 @@ function checking(){
 						wp_die(json_encode(array('success' => false,
 																			'alert'=> $unavailable_dates_alert)));
 					else:
-						$url= get_home_url().'/reservation';
+						
 						wp_die(json_encode(array('success' => true,
 																			'alert'=> $available_dates_alert,																		
 																			'data' => $data,
-																			'url'=> get_home_url().'/reservation'
+																			'url'=> $url
 																		)));
 					endif;	
 				endif; 
@@ -268,26 +281,25 @@ function checking(){
 add_action('wp_ajax_reservation', 'reservation');
 add_action('wp_ajax_nopriv_reservation', 'reservation');
 function reservation(){
-
-	$wrong_date = get_field("wrong_date",'options');
-	$before_today = get_field("before_today_date",'options');
-	$unexisting_field =  get_field('unexisting','options');
-	$available_dates_alert = get_field('available_alert','options');
-	$unavailable_dates_alert = get_field('unavailable_alert','options');
-	$wrong_email = get_field("wrong_email",'options');
-	$wrong_input = get_field("wrong_input",'options');
-	$wrong_phone = get_field("wrong_phone",'options');
-	
-	$today = date('Ymd');
-	  	
 	$validation_error = array();
-
-	$phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
-	$text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
-  $email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
 		
 	if ($_SERVER["REQUEST_METHOD"] === "POST"):
-
+		$wrong_date = get_field('wrong_date',pll_current_language('slug'));
+    $before_today = get_field('before_today_date',pll_current_language('slug'));
+    $unexisting_field =  get_field('unexisting',pll_current_language('slug'));
+    $available_dates_alert = get_field('available_alert',pll_current_language('slug'));
+    $unavailable_dates_alert = get_field('unavailable_alert',pll_current_language('slug'));
+    $wrong_email = get_field('wrong_email',pll_current_language('slug'));
+    $wrong_input = get_field('wrong_input',pll_current_language('slug'));
+    $wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
+    $url= get_field('reservation_link', pll_current_language('slug'));
+	
+    $today = date('Ymd');
+  
+    $phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
+    $text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
+    $email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/'; 	
+  
 	
 		if(isset($_POST['checkin_date'])):
 			$checkin_date = test_input($_POST['checkin_date']);	
@@ -355,14 +367,16 @@ function reservation(){
 			$validation_error['phone'] = $unexisting_field;
 		endif;
 
-		/* ------- */
-		$data= array('checkin' => $checkin_date,
-										'checkout'=> $checkout_date,
-										'adults'=> $adults,
-										'children'=>$children,
-									);
+		if(isset($_POST['message'])):
+				$message = test_input($_POST['message']);
+			if ($message!='' && !preg_match( $text_pattern,$message)):
+				$validation_error['message'] = $wrong_input;
+			endif;
+		else: 
+			$validation_error['message'] = $unexisting_field;
+		endif;		
 
-		$subject = get_field('reservation_subject','optoions');
+		$subject = get_field('reservation_subject',pll_current_language('slug'));
 
 		$sender_info ='Name: '. $name."\n" .
 									'Email: ' .$email. "\n" . 
@@ -375,9 +389,12 @@ function reservation(){
 										'Children:'.$children."\n" .
 										$sender_info;
 
+		
+			$to = get_option('admin_email');
+
 		/* ------- */
 
-		/*  if (isset($_POST['checking'])):
+		/* if (isset($_POST['checking'])):
 
 			if (empty($validation_error)):		
 				if (isset($_POST['available']) ): 
@@ -386,11 +403,11 @@ function reservation(){
 						wp_die(json_encode(array('success' => false,
 																			'alert'=> $unavailable_dates_alert)));
 					else:
-						$url= get_home_url().'/reservation';
+						
 						wp_die(json_encode(array('success' => true,
 																			'alert'=> $available_dates_alert,																		
 																			'data' => $data,
-																			'url'=> get_home_url().'/reservation'
+																			'url'=> $url
 																		)));
 					endif;	
 				endif; 
@@ -398,25 +415,23 @@ function reservation(){
 				wp_die(json_encode(array('success' => false, 'error' => $validation_error)));
 			endif; 	
 		
-		endif;  */
-		/* ------- */
+		endif;   */
+		/* ------- */		 
 
-		 
+	/* 
+		if (isset($_POST['reserve'])): 
+ 	*/
 
-	
-		/* if (isset($_POST['reserve'])): */
-		
-			$to = get_option('admin_email');
 			if (empty($validation_error)):
 				
 					$booking = wp_mail( $to,	$subject , $message_send );
 					if ($booking):
-						$alert_message = get_field('sending_success','options');
+						$alert_message = get_field('sending_success',pll_current_language('slug'));
 						wp_die(json_encode(array('success' => true, 
-																		'alert'=> $alert_message ,
+																		'alert'=> $alert_message,
 																		'data' => $message_send)));
 					else: 
-						$alert_message = get_field('sending_fail','options');
+						$alert_message = get_field('sending_fail',pll_current_language('slug'));
 						wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 					endif;
  				
@@ -424,9 +439,8 @@ function reservation(){
 				wp_die(json_encode(array('success' => false, 'error' => $validation_error)));
 			
 			endif;
- 
-		/* 	endif; */
-		/* ------- */
+
+		/* endif; */
 
 	endif;
 }
@@ -438,10 +452,10 @@ add_action('wp_ajax_send_mail', 'send_mail');
 add_action('wp_ajax_nopriv_send_mail', 'send_mail');
 function send_mail(){
 
-	$wrong_phone = get_field("wrong_phone",'options');
-	$wrong_email = get_field('wrong_email','options');
-	$wrong_input = get_field('wrong_input','options');
-	$unexisting_field = get_field('unexisting','options');
+	$wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
+	$wrong_email = get_field('wrong_email',pll_current_language('slug'));
+	$wrong_input = get_field('wrong_input',pll_current_language('slug'));
+	$unexisting_field = get_field('unexisting',pll_current_language('slug'));
 
 	$text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
 	$phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
@@ -487,13 +501,14 @@ function send_mail(){
 			endif;
 			
 
-			$subject = get_field('admin_email');
+			$subject = get_field('contact_subject',pll_current_language('slug'));
 			$message_send = 'Message:'. $message . "\n" .
+											'Subject: '. $subject."\n" .
 											'Name: '. $sender_name."\n" .
 											'Email: ' .$sender_email. "\n".
 											'Phone:' . $sender_phone. "\n";
 
-			$alert_message = get_field('sending_success','options');
+			$alert_message = get_field('sending_success',pll_current_language('slug'));
 			
 
 			$to = get_option('admin_email');
@@ -504,7 +519,7 @@ function send_mail(){
 				if ($mail):
 					wp_die(json_encode(array('success' => true, 'alert'=> $alert_message , 'data' => $message_send)));
 				else: 
-					$alert_message = get_field('sending_fail','options');
+					$alert_message = get_field('sending_fail',pll_current_language('slug'));
 					wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 				endif;
 			
@@ -525,36 +540,26 @@ function my_navigation_template( $template, $class ){
 		<div class="nav-links">%3$s</div>
 	</nav>
 	*/
-	return '
-
-		<li>%3$s</li>
-	
-	';
+	return '<li>%3$s</li>';
 }
 
-// выводим пагинацию
-the_posts_pagination( array(
-	'end_size' => 2,
-) ); 
-
-
-
+/* ********************** */
 // свои типы записей
 add_action('init', 'event_posts_init');
 function event_posts_init(){
 	register_post_type('event', array(
 			'labels'             => array(
-			'name'               => 'Мероприятия', // Основное название типа записи
-			'singular_name'      => 'Мероприятие', // отдельное название записи типа 
-			'add_new'            => 'Добавить новое',
-			'add_new_item'       => 'Добавить новое мероприятие',
-			'edit_item'          => 'Редактировать',
-			'new_item'           => 'Новое мероприятие',
-			'view_item'          => 'Посмотреть ',
-			'search_items'       => 'Найти ',
-			'not_found'          => 'Мероприятий не найдено',
-			'not_found_in_trash' => 'В корзине мероприятий не найдено',
-      'menu_name'          => 'Мероприятия'
+			'name'               => 'Події', // Основное название типа записи
+			'singular_name'      => 'Подія', // отдельное название записи типа 
+			'add_new'            => 'Додати',
+			'add_new_item'       => 'Додати нову подію',
+			'edit_item'          => 'Редагувати',
+			'new_item'           => 'Нова подія',
+			'view_item'          => 'Подивитися',
+			'search_items'       => 'Знайти ',
+			'not_found'          => 'Події не знайдено',
+			'not_found_in_trash' => 'В корзині подій не знайдено',
+      'menu_name'          => 'Події'
 
 		  ),
 		'public'             => true,
@@ -569,7 +574,7 @@ function event_posts_init(){
 		'menu_icon' 				 => 'dashicons-calendar-alt',
 		'menu_position'      => 6,
 		'taxonomies'         => array( 'category',  'post_tag' ),
-		'supports'           => array( 'title', 'editor' ,'thumbnail',  'comments')
+		'supports'           => array( 'title', 'editor' ,'thumbnail', 'excerpt', 'comments')
 	) );
 }
 
@@ -578,17 +583,17 @@ add_action('init', 'room_posts_init');
 function room_posts_init(){
 	register_post_type('room', array(
 			'labels'             => array(
-			'name'               => 'Номера', // Основное название типа записи
+			'name'               => 'Номери', // Основное название типа записи
 			'singular_name'      => 'Номер', // отдельное название записи типа 
-			'add_new'            => 'Добавить новый',
-			'add_new_item'       => 'Добавить новый номер',
-			'edit_item'          => 'Редактировать',
-			'new_item'           => 'Новый номер',
-			'view_item'          => 'Посмотреть ',
-			'search_items'       => 'Найти ',
-			'not_found'          => 'Номеров не найдено',
-			'not_found_in_trash' => 'В корзине номеров не найдено',
-      'menu_name'          => 'Комнаты/Номера'
+			'add_new'            => 'Додати новий',
+			'add_new_item'       => 'Дадати новий номер',
+			'edit_item'          => 'Редагурати',
+			'new_item'           => 'Новий номер',
+			'view_item'          => 'Переглянути ',
+			'search_items'       => 'Знайти ',
+			'not_found'          => 'Номерів не знайдено',
+			'not_found_in_trash' => 'В корзині номерів не знайдено',
+      'menu_name'          => 'Кімнати/Номери'
 
 		  ),
 		'public'             => true,
@@ -603,7 +608,7 @@ function room_posts_init(){
 		'menu_icon' 				 => 'dashicons-admin-multisite',
 		'menu_position'      => 7,
 		'taxonomies'         => array( 'category',  'post_tag' ),
-		'supports'           => array( 'title', 'editor' ,'thumbnail',  'comments')
+		'supports'           => array( 'title', 'editor' ,'thumbnail', 'excerpt', 'comments')
 	) );
 }
 
@@ -611,17 +616,17 @@ add_action('init', 'testimonial_posts_init');
 function testimonial_posts_init(){
 	register_post_type('testimonial', array(
 			'labels'             => array(
-			'name'               => 'Отзывы', // Основное название типа записи
-			'singular_name'      => 'Отзыв', // отдельное название записи типа 
-			'add_new'            => 'Добавить новый',
-			'add_new_item'       => 'Добавить новый отзыв',
-			'edit_item'          => 'Редактировать',
-			'new_item'           => 'Новый отзыв',
-			'view_item'          => 'Посмотреть ',
-			'search_items'       => 'Найти ',
-			'not_found'          => 'Отзывов не найдено',
-			'not_found_in_trash' => 'В корзине отзывов не найдено',
-      'menu_name'          => 'Отзывы'
+			'name'               => 'Відгуки', // Основное название типа записи
+			'singular_name'      => 'Відгук', // отдельное название записи типа 
+			'add_new'            => 'Додати новий',
+			'add_new_item'       => 'Додати новий відгук',
+			'edit_item'          => 'Редагувати',
+			'new_item'           => 'Новий відгук',
+			'view_item'          => 'Переглянути ',
+			'search_items'       => 'Знайти ',
+			'not_found'          => 'Відгуків не найдено',
+			'not_found_in_trash' => 'В корзине відгуків не найдено',
+      'menu_name'          => 'Відгуки'
 
 		  ),
 		'public'             => true,
@@ -636,7 +641,7 @@ function testimonial_posts_init(){
 		'menu_icon' 				 => 'dashicons-testimonial',
 		'menu_position'      => 8,
 		'taxonomies'         => array( 'category',  'post_tag' ),
-		'supports'           => array( 'title', 'editor' ,'thumbnail')
+		'supports'           => array( 'title', 'editor' ,'excerpt','thumbnail' )
 	) );
 }
 

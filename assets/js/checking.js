@@ -37,8 +37,7 @@ jQuery(document).ready(function($){
         },
         success: function(response){ // если все успешно обработано -             
           if (response.success==true){
-            console.log(response);
-            form[0].reset(); // после закрытия окошка очищаем введенные данные 
+            form[0].reset(); //  очищаем введенные данные 
             localStorage.setItem("alert", response.alert);
             $.each(response.data, function (index, value) {
               localStorage.setItem(index, value);
@@ -52,7 +51,7 @@ jQuery(document).ready(function($){
               }
               if (response.error){
                 $.each(response.error, function (index, value) {
-                  $('input[name='+index+'], input[class='+index+']').addClass('invalide').after('<div class="wrong-input">'+ value+ '</div>');
+                  $('input[name='+index+']').addClass('invalide').after('<div class="wrong-input">'+ value+ '</div>');
                   console.log(response.error);
                 });
               }

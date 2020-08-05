@@ -3,7 +3,7 @@
         <div class="row justify-content-center text-center mb-5">
           <div class="col-md-7">
             <h2 class="heading" data-aos="fade-up">
-              <?= the_field('testimonials_section_title','options');?>
+              <?= the_field('testimonials_section_title',pll_current_language('slug'));?>
             </h2>
           </div>
         </div>

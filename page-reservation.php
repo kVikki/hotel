@@ -17,19 +17,19 @@ get_header();
         
         <form id="reservation" action="<?= admin_url('admin-ajax.php?action=reservation')?>"
           method="post" class="bg-white p-md-5 p-4 mb-5 border"
-          data-requider="<?=get_field('required_field','options'); ?>">
+          data-required="<?=the_field('required_field',pll_current_language('slug')); ?>">
           <div class="row">
           <!-- Name -->
             <div class="col-md-6 form-group">
               <label class="text-black font-weight-bold" for="name">
-                <?= the_field('name_label','options');?>
+                <?= the_field('name_label',pll_current_language('slug'));?>
               </label>
               <input type="text" id="name" name="name"class="form-control form-control-required">
             </div>
             <!-- Phone  -->
             <div class="col-md-6 form-group">
               <label class="text-black font-weight-bold" for="phone">
-                <?= the_field('phone_label','options');?>
+                <?= the_field('phone_label',pll_current_language('slug'));?>
               </label>
               <input type="text" id="phone" name="phone"class="form-control form-control-required">
             </div>
@@ -38,7 +38,7 @@ get_header();
           <div class="row">
             <div class="col-md-12 form-group">
               <label class="text-black font-weight-bold" for="email">
-                <?= the_field('email_label','options');?>
+                <?= the_field('email_label',pll_current_language('slug'));?>
               </label>
               <input type="email" id="email" name="email" class="form-control form-control-required">
             </div>
@@ -48,14 +48,14 @@ get_header();
             <!-- Checkin -->
             <div class="col-md-6 form-group">
               <label class="text-black font-weight-bold" for="checkin_date">
-                <?= the_field('checkin_date_label','options');?>
+                <?= the_field('checkin_date_label',pll_current_language('slug'));?>
               </label>
               <input type="text" id="checkin_date" name="checkin_date" class="form-control form-control-required" >
             </div>
             <!-- Checkout -->
             <div class="col-md-6 form-group">
               <label class="text-black font-weight-bold" for="checkout_date">
-                <?= the_field('checkout_date_label','options');?>
+                <?= the_field('checkout_date_label',pll_current_language('slug'));?>
               </label>
               <input type="text" id="checkout_date" name="checkout_date" class="form-control form-control-required">
             </div>
@@ -65,13 +65,13 @@ get_header();
              <!-- Adults --> 
             <div class="col-md-6 form-group">
               <label for="adults" class="font-weight-bold text-black">
-                <?= the_field('adults_label','options');?>
+                <?= the_field('adults_label',pll_current_language('slug'));?>
               </label>
               <div class="field-icon-wrap">
                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                 <select name="adults" id="adults" class="form-control form-control-required" >
                   <?php                     
-                    $adults = get_field('adults','options');
+                    $adults = get_field('adults',pll_current_language('slug'));
                     if($adults):
                       foreach($adults as $row):?>
                         <option value="<?= $row['adults_number']?>">
@@ -87,13 +87,13 @@ get_header();
             <!-- Children -->         
             <div class="col-md-6 form-group">
               <label for="children" class="font-weight-bold text-black">
-                <?= the_field('children_label','options');?>
+                <?= the_field('children_label',pll_current_language('slug'));?>
               </label>
               <div class="field-icon-wrap">
                 <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                 <select name="children" id="children" class="form-control" >
                   <?php                     
-                    $children = get_field('children','options');
+                    $children = get_field('children',pll_current_language('slug'));
                     if($children):
                       foreach($children as $row):?>
                         <option value="<?= $row['children_number']?>">
@@ -111,7 +111,7 @@ get_header();
           <div class="row mb-4">
             <div class="col-md-12 form-group">
               <label class="text-black font-weight-bold" for="message">
-                <?= the_field('notes_label','options');?>
+                <?= the_field('notes_label',pll_current_language('slug'));?>
               </label>
               <textarea name="message" id="message" class="form-control " cols="30" rows="8"></textarea>
             </div>
@@ -119,8 +119,8 @@ get_header();
           <!-- Button -->
           <div class="row">
             <div class="col-md-6 form-group">
-              <button type="submit" value="<?= the_field('reserve_now_btn','options');?>" name="reserve" id="reserve" class="btn btn-primary text-white py-3 px-5 font-weight-bold">
-               <?= the_field('reserve_now_btn','options');?>
+              <button type="submit" value="<?= the_field('reserve_now_btn',pll_current_language('slug'));?>" name="reserve" id="reserve" class="btn btn-primary text-white py-3 px-5 font-weight-bold">
+               <?= the_field('reserve_now_btn',pll_current_language('slug'));?>
               </button>
             </div>
           </div>

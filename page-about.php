@@ -5,10 +5,10 @@
 <?php
 get_header();
 
-  $the_leadership_title = get_field('leadership_section_title','options');
+  $the_leadership_title = get_field('leadership_section_title',pll_current_language('slug'));
   $members=get_field('leadership');
  
-  $the_history_title = get_field('history_section_title','options');
+  $the_history_title = get_field('history_section_title',pll_current_language('slug'));
   $events=get_field('history');
  
 ?>

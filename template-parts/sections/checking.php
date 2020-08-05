@@ -21,7 +21,7 @@
           <div class="row">
             <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
               <label for="checkin_date" class="font-weight-bold text-black ">
-                <?= the_field('checkin_date_label','options');?>
+                <?= the_field('checkin_date_label',pll_current_language('slug'));?>
               </label>
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
               <label for="checkout_date" class="font-weight-bold text-black ">
-                <?= the_field('checkout_date_label','options');?>
+                <?= the_field('checkout_date_label',pll_current_language('slug'));?>
               </label>
               <div class="field-icon-wrap">
                 <div class="icon"><span class="icon-calendar"></span></div>
@@ -41,13 +41,13 @@
               <div class="row">
                 <div class="col-md-6 mb-3 mb-md-0">
                   <label for="adults" class="font-weight-bold text-black ">
-                    <?= the_field('adults_label','options');?>
+                    <?= the_field('adults_label',pll_current_language('slug'));?>
                   </label>
                   <div class="field-icon-wrap">
                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                     <select name="adults" id="adults" class="form-control" >
                       <?php                     
-                        $adults = get_field('adults','options');
+                        $adults = get_field('adults',pll_current_language('slug'));
                         if($adults):
                           foreach($adults as $row):?>
                             <option value="<?= $row['adults_number']?>">
@@ -62,13 +62,13 @@
                 </div>
                 <div class="col-md-6 mb-3 mb-md-0">
                   <label for="children" class="font-weight-bold text-black">
-                    <?= the_field('children_label','options');?>
+                    <?= the_field('children_label',pll_current_language('slug'));?>
                   </label>
                   <div class="field-icon-wrap">
                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                     <select name="children" id="children" class="form-control">
                       <?php                     
-                        $children = get_field('children','options');
+                        $children = get_field('children',pll_current_language('slug'));
                         if($children):
                           foreach($children as $row):?>
                             <option value="<?= $row['children_number']?>">
@@ -88,7 +88,7 @@
             </div>
             <div class="col-md-6 col-lg-3 align-self-end">
               <button type="submit" class="btn btn-primary btn-block text-white" name="checking" id="checking">
-                <?= the_field('check_availability_btn','options');?>
+                <?= the_field('check_availability_btn',pll_current_language('slug'));?>
               </button>
             </div>
           </div>

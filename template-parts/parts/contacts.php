@@ -11,7 +11,7 @@
 <div class="<?= $contact_class;?>">
 
   <?php 
-    $contacts = get_field('contacts_menu', 'options');
+    $contacts = get_field('contacts_menu', pll_current_language('slug'));
     if( $contacts):
       foreach( $contacts as $contact ):
         $icon=$contact['contact_icon'];

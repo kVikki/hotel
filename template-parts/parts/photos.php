@@ -3,7 +3,7 @@
   <div class="home-slider major-caousel owl-carousel mb-5" data-aos="fade-up" data-aos-delay="200">
     
     <?php 
-      $images = get_field('img_gallery', 'options');
+      $images = get_field('img_gallery', pll_current_language('slug'));
       if( $images ): ?>
         <?php
           foreach( $images as $image ): ?>

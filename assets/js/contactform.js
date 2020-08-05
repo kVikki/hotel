@@ -2,6 +2,7 @@ jQuery(document).ready(function($){
   var form = $('#contact-form');
   var required= form.data('required');
   var error;
+
   /* Checking if empty and email validation */
     function checkInput() {
       
@@ -10,31 +11,28 @@ jQuery(document).ready(function($){
         if (element.val() !="") {
           element.removeClass('invalide');
         } else {
-          element.addClass('invalide');
+          element.addClass('invalide').after('<div class="wrong-input">'+ required+ '</div>');
         }
-      });
-      
-      form.find('.form-control-required invalide').each(function () {
-        $.after('<div class="wrong-input">'+ required+ '</div>');
-      });
-
+      });      
+     
       error = form.find('.invalide').length;
     }
 
   form.on("submit", function(e){ // когда будет подтверждена отправка контактной формы
-    $('input').removeClass('invalide');
     $('.wrong-input').remove();
-     
+    $('input').removeClass('invalide');
+
       e.preventDefault();
       var action = form.attr('action'); 
       checkInput();
+      
       if (error == 0) {
         $this = $(this);
         $.ajax({ // обработчик событий
           type: "POST", // отправляет  данные на сервер
           dataType: "json",
           url: action, // в качетсве ссылки мы используем заданный в аттребуте action путь
-          data: $this.serialize(), // данные берем из формы, преобразовываем их в текст 
+          data: form.serialize(), // данные берем из формы, преобразовываем их в текст 
           beforeSend: function() {// данный обработчик будет вызван перед отправкой данного AJAX-запроса
             $('input[type=submit]').prop( 'disabled', true );
           },
