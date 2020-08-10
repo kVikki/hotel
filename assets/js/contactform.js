@@ -3,6 +3,13 @@ jQuery(document).ready(function($){
   var required= form.data('required');
   var error;
 
+  /* Modal alert window */
+  function alert_modal(data){
+    $('.modal-body').html(data);
+    $('#alert-modal').modal();
+  }
+  /* ---------- */
+
   /* Checking if empty and email validation */
     function checkInput() {
       
@@ -38,12 +45,12 @@ jQuery(document).ready(function($){
           },
           success: function(response){ // если все успешно обработано -             
             if (response.success==true){
-              alert(response.alert);
+              alert_modal(response.alert);
               form[0].reset(); // после закрытия окошка очищаем введенные данные
               
             } else {
               if (response.alert){
-                alert(response.alert);
+                alert_modal(response.alert);
               } else {
                 $.each(response.error, function (index, value) {
                   $('input[name='+index+'],textarea[name='+index+']').addClass('invalide').after('<div class="wrong-input">'+ value+ '</div>');
@@ -56,7 +63,7 @@ jQuery(document).ready(function($){
             console.log(request); // отображаем данные об ошибке в консоль
             console.log(txtstatus);
             console.log(errorThrown);
-            alert(response.alert ); // выведем окно с сообщением
+            alert_modal(response.alert ); // выведем окно с сообщением
           },
           complete:function(){
             $('input[type=submit]').prop( 'disabled', false );
