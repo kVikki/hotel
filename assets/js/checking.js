@@ -3,6 +3,13 @@ jQuery(document).ready(function($){
   var error;
   console.log($('#available').val());
 
+  /* Modal alert window */
+  function alert_modal(data){
+    $('.modal-body').html(data);
+    $('#alert-modal').modal();
+  }
+  /* ---------- */
+
   /* Checking if empty */
    function checkInput() {
     form.find('.form-control-required').each(function () {
@@ -45,9 +52,11 @@ jQuery(document).ready(function($){
              window.location.href = response.url;
           } else {
               if (response.alert){
-                alert(response.alert);
-                /* паразегрузка, чтобы рэндомное значение изменилось */
-                location.reload(true);
+                alert_modal(response.alert);
+                $('#alert-modal').on('hidden.bs.modal', function () { 
+                  /* паразегрузка, чтобы рэндомное значение изменилось */
+                  location.reload(true);
+                });
               }
               if (response.error){
                 $.each(response.error, function (index, value) {
@@ -62,7 +71,9 @@ jQuery(document).ready(function($){
           console.log(request); // отображаем данные об ошибке в консоль
           console.log(txtstatus);
           console.log(errorThrown);
-          alert(response.error ); // выведем окно с сообщением
+
+          alert_modal(response.error);
+          
         },
         complete:function(){
           $('button[type=submit]').prop( 'disabled', false );         

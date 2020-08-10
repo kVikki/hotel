@@ -121,8 +121,7 @@ if( function_exists('acf_add_options_page') ):
       'post_id'    => $lang,
       'parent'     => $parent['menu_slug']
     ) );
-		endforeach;
-
+	endforeach;
 
 endif;
 
@@ -142,23 +141,36 @@ endif;
 add_action('wp_ajax_newsletters', 'newsletters');
 add_action('wp_ajax_nopriv_newsletters', 'newsletters');
 function newsletters(){
-	$wrong_email = get_field('wrong_email', pll_current_language('slug'));
-	$unexisting_field = get_field('unexisting', pll_current_language('slug'));
-	$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
-		
-	$validation_error = array();
 	
-	global $wpdb; 	
+	$validation_error = array();
+		
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
+		global $wpdb; 
+		$wrong_email = get_field('wrong_email', pll_current_language('slug'));
+		$existing_email = get_field('existing_email', pll_current_language('slug'));
+		$unexisting_field = get_field('unexisting', pll_current_language('slug'));
+		$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
+		
 			if(isset($_POST['email_newsletters'])):
 				$sender_email = test_input($_POST['email_newsletters']); 
-				if (!preg_match($email_pattern, $sender_email)):
+				if (preg_match($email_pattern, $sender_email)):	
+					$db_emails=$wpdb->query(
+						$wpdb->prepare( 
+							"SELECT count(*) FROM wp_newsletters WHERE email= %s", $sender_email
+					)); 
+							
+					if ($db_emails):			
+						$validation_error['email_newsletters']= $existing_email;				
+					endif;
+					else:			
 					$validation_error['email_newsletters'] = $wrong_email;
 				endif;
 			else: 
 				$validation_error['email_newsletters']= $unexisting_field;
 			endif;
+
+			
 		
 			$subject = get_field("subscribe_letter_subject", pll_current_language('slug'));
 			$message = get_field("subscribe_message", pll_current_language('slug'));
@@ -392,36 +404,6 @@ function reservation(){
 		
 			$to = get_option('admin_email');
 
-		/* ------- */
-
-		/* if (isset($_POST['checking'])):
-
-			if (empty($validation_error)):		
-				if (isset($_POST['available']) ): 
-					$available =  $_POST['available'];
-					if ($available==0):
-						wp_die(json_encode(array('success' => false,
-																			'alert'=> $unavailable_dates_alert)));
-					else:
-						
-						wp_die(json_encode(array('success' => true,
-																			'alert'=> $available_dates_alert,																		
-																			'data' => $data,
-																			'url'=> $url
-																		)));
-					endif;	
-				endif; 
-			else:
-				wp_die(json_encode(array('success' => false, 'error' => $validation_error)));
-			endif; 	
-		
-		endif;   */
-		/* ------- */		 
-
-	/* 
-		if (isset($_POST['reserve'])): 
- 	*/
-
 			if (empty($validation_error)):
 				
 					$booking = wp_mail( $to,	$subject , $message_send );
@@ -440,8 +422,6 @@ function reservation(){
 			
 			endif;
 
-		/* endif; */
-
 	endif;
 }
 
@@ -450,19 +430,20 @@ function reservation(){
 // форма отправки сообщений
 add_action('wp_ajax_send_mail', 'send_mail');
 add_action('wp_ajax_nopriv_send_mail', 'send_mail');
-function send_mail(){
-
-	$wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
-	$wrong_email = get_field('wrong_email',pll_current_language('slug'));
-	$wrong_input = get_field('wrong_input',pll_current_language('slug'));
-	$unexisting_field = get_field('unexisting',pll_current_language('slug'));
-
-	$text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
-	$phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
-	$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
+function send_mail(){	
 	
 	$validation_error = array();
+	
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
+		$wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
+		$wrong_email = get_field('wrong_email',pll_current_language('slug'));
+		$wrong_input = get_field('wrong_input',pll_current_language('slug'));
+		$unexisting_field = get_field('unexisting',pll_current_language('slug'));
+
+		$text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
+		$phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
+		$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
+
 			if(isset($_POST['email'])):
 				$sender_email = test_input($_POST['email']);
 				if (!preg_match($email_pattern, $sender_email)):
