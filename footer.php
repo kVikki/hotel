@@ -47,8 +47,7 @@
 							 class="footer-newsletter" 	method="post">
 							
 							<div class="form-group">
-								<input type="email" id="email_newsletters" name="email_newsletters" class="form-control validates-as-required"
-								placeholder="<?= get_field('news_placeholder',pll_current_language('slug'));?>">
+								<input type="email" id="email_newsletters" name="email_newsletters" class="form-control validates-as-required" placeholder="<?= get_field('news_placeholder',pll_current_language('slug'));?>">
 								<button type="submit" class="btn" id="submit">
 									<span class="fa fa-<?= get_field('send_icon',pll_current_language('slug'));?>"></span>
 								</button>

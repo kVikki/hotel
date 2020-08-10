@@ -4,14 +4,6 @@ jQuery(document).ready(function($){
   var required= form.data('required');
   var error;
 
-
-  /* Modal alert window */
-  function alert_modal(data){
-    $('.modal-body').html(data);
-    $('#alert-modal').modal();
-  }
-  /* ---------- */
-
   /*   Если была заполнена форма checking, отображается сообщение
     что даты свободны и заполняются поля данными из той формы */
    
@@ -21,9 +13,8 @@ jQuery(document).ready(function($){
       var children = localStorage.getItem('children');
       var alert_message = localStorage.getItem('alert');
       
-      if (localStorage.getItem('alert')) { 
-        alert_modal(alert_message);       
-
+      if (alert_message) {       
+        alert(alert_message);
         $('#checkin_date').attr( "value", check_in);  
         $('#checkout_date').attr( "value", check_out); 
         $('#adults').attr( "value", adults);  
@@ -68,11 +59,11 @@ jQuery(document).ready(function($){
         },
         success: function(response){ // если все успешно обработано -
           if (response.success==true){         
-            alert_modal(response.alert); //  выводим сообщение в виде окошка
+            alert(response.alert); //  выводим сообщение в виде окошка
             form[0].reset(); // после закрытия окошка очищаем введенные данные
           } else {
             if (response.alert){
-              alert_modal(response.alert);
+              alert(response.alert);
             } else {
               $.each(response.error, function (index, value) {
                 $('input[name='+index+'],textarea[name='+index+']').addClass('invalide').after('<div class="wrong-input">'+ value+ '</div>');
@@ -85,7 +76,7 @@ jQuery(document).ready(function($){
           console.log(request); // отображаем данные об ошибке в консоль
           console.log(txtstatus);
           console.log(errorThrown);
-          alert_modal(response.alert ); // выведем окно с сообщением
+          alert(response.alert ); // выведем окно с сообщением
         },
         complete:function(){
           $('button[type=submit]').prop('disabled', false );

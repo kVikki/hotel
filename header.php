@@ -72,29 +72,6 @@
       </div>
     </header>
     <!-- END head -->
-    <!-- Modal window for alerts -->
-    <div id="alert-modal" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button class="close" type="button" data-dismiss="modal">
-              ×
-            </button>
-            <h4 class="modal-title">
-            
-            </h4>
-          </div>
-          <div class="modal-body">
-            
-          </div>
-          <div class="modal-footer">
-            <button id="close" class="btn btn-default" type="button" data-dismiss="modal">
-              OK
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     
     <?php get_template_part('template-parts/sections/top-section');?>
 
