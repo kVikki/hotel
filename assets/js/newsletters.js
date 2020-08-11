@@ -1,7 +1,7 @@
 jQuery(document).ready(function($){
   var form = $('#newsletters');
   var input=$('#email_newsletters');
-  console.log(input.val());
+  console.log('email ' + input.val());
     
 
   form.on('submit', function(e){ // когда будет подтверждена отправка контактной формы
