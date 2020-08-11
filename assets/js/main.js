@@ -156,10 +156,12 @@
   var dateAndTime = function() {
     $('#m_date').datepicker({
       'format': 'm/d/yyyy',
+      'weekStart': 1,
       'autoclose': true
     });
     $('#checkin_date, #checkout_date').datepicker({
       'format': 'd MM, yyyy',
+      'weekStart': 1,
       'autoclose': true
     });
     $('#m_time').timepicker();

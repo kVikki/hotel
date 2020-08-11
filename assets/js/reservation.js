@@ -1,10 +1,13 @@
 
 jQuery(document).ready(function($){
+ 
   var form = $('#reservation');
   var required= form.data('required');
   var error;
-
-
+  console.log('reservation ' + $('*').is('#reservation'));
+  console.log( 'local_storage alert_message ' + localStorage.getItem('alert'));
+  
+  
   /* Modal alert window */
   function alert_modal(data){
     $('.modal-body').html(data);
@@ -12,25 +15,26 @@ jQuery(document).ready(function($){
   }
   /* ---------- */
 
-  /*   Если была заполнена форма checking, отображается сообщение
+ /*   Если была заполнена форма checking, отображается сообщение
     что даты свободны и заполняются поля данными из той формы */
-   
       var check_in = localStorage.getItem('checkin');
       var check_out = localStorage.getItem('checkout');
       var adults = localStorage.getItem('adults');
       var children = localStorage.getItem('children');
       var alert_message = localStorage.getItem('alert');
+           
+    if ( $('*').is('#reservation')) {    
       
-      if (localStorage.getItem('alert')) { 
-        alert_modal(alert_message);       
-
+      if (alert_message){
+        alert_modal(alert_message );          
         $('#checkin_date').attr( "value", check_in);  
         $('#checkout_date').attr( "value", check_out); 
         $('#adults').attr( "value", adults);  
         $('#children').attr( "value", children);            
-      }      
-      localStorage.clear();
-  /* ----------------------------- */
+        }      
+    }  
+     localStorage.clear();  
+/* ----------------------------- */
     
 
   /* Checking if empty */
@@ -62,7 +66,7 @@ jQuery(document).ready(function($){
 				type: "POST", // отправляет  данные на сервер
 				url: action, // в качетсве ссылки мы используем заданный в аттребуте action путь
         dataType: "json",
-        data: form.serialize(), // данные берем из формы, преобразовываем их в текст 
+        data: $this.serialize(), // данные берем из формы, преобразовываем их в текст 
         beforeSend: function() {// данный обработчик будет вызван перед отправкой данного AJAX-запроса
           $('button[type=submit]').prop( 'disabled', true );
         },

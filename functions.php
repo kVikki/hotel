@@ -214,6 +214,7 @@ function checking(){
 	$today = date('Ymd');
 	  	
 	$validation_error = array();
+	$data=array();
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
 		$wrong_date = get_field('wrong_date',pll_current_language('slug'));
 		$before_today = get_field('before_today_date',pll_current_language('slug'));
@@ -272,8 +273,7 @@ function checking(){
 					if ($available==0):
 						wp_die(json_encode(array('success' => false,
 																			'alert'=> $unavailable_dates_alert)));
-					else:
-						
+					else:						
 						wp_die(json_encode(array('success' => true,
 																			'alert'=> $available_dates_alert,																		
 																			'data' => $data,

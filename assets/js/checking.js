@@ -1,7 +1,8 @@
 jQuery(document).ready(function($){  
   var form = $('#check');
   var error;
-  console.log($('#available').val());
+  console.log('available ' + $('#available').val());
+  localStorage.clear();  
 
   /* Modal alert window */
   function alert_modal(data){
@@ -9,6 +10,10 @@ jQuery(document).ready(function($){
     $('#alert-modal').modal();
   }
   /* ---------- */
+
+
+
+   
 
   /* Checking if empty */
    function checkInput() {
@@ -45,17 +50,21 @@ jQuery(document).ready(function($){
         success: function(response){ // если все успешно обработано -             
           if (response.success==true){
             form[0].reset(); //  очищаем введенные данные 
-            localStorage.setItem("alert", response.alert);
+            localStorage.setItem('alert', response.alert);
             $.each(response.data, function (index, value) {
               localStorage.setItem(index, value);
-            });            
-             window.location.href = response.url;
+            }); 
+            console.log( 'Alert_message ' + localStorage.getItem('alert'));
+  
+
+            window.location.href = response.url;
           } else {
               if (response.alert){
                 alert_modal(response.alert);
                 $('#alert-modal').on('hidden.bs.modal', function () { 
                   /* паразегрузка, чтобы рэндомное значение изменилось */
                   location.reload(true);
+                  localStorage.clear();
                 });
               }
               if (response.error){
@@ -63,6 +72,7 @@ jQuery(document).ready(function($){
                   $('input[name='+index+']').addClass('invalide').after('<div class="wrong-input">'+ value+ '</div>');
                   console.log(response.error);
                 });
+                
               }
           }
           
