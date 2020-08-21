@@ -35,6 +35,17 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 	color: white;
 }
 
+div .polylang-bar{
+
+	float: right;
+	letter-spacing: .1em;
+	position: relative;
+	top: -50px;
+	left: -87px;
+}
+
+
+
 
 
 body {
@@ -987,6 +998,8 @@ body {
 	-moz-perspective: 1000;
 	-ms-perspective: 1000;
 	perspective: 1000;
+	transform: perspective(1000px);
+	transform-style: preserve-3d;
 	-ms-transform: perspective(1000px);
 	-moz-transform: perspective(1000px);
 	-moz-transform-style: preserve-3d;
@@ -1014,7 +1027,8 @@ body {
 	  -moz-transform-style: preserve-3d;
 	  -ms-transform-style: preserve-3d;
 	  -o-transition: 0.6s;
-	  transition: 0.6s;
+		transition: 0.6s;
+		transform: perspective(1000px);
 	  transform-style: preserve-3d;
 	  position: relative; }
 	.block-2 .front, .block-2 .back {
@@ -1042,6 +1056,7 @@ body {
 	  top: 0;
 	  left: 0; }
 	.block-2 .front {
+		transform: rotateY(0deg);
 	  -webkit-transform: rotateY(0deg);
 	  -ms-transform: rotateY(0deg);
 	  background: lightgreen;

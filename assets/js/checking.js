@@ -1,7 +1,7 @@
 jQuery(document).ready(function($){  
   var form = $('#check');
   var error;
-  console.log('available ' + $('#available').val());
+  console.log( $('#available').val());
   localStorage.clear();  
 
   /* Modal alert window */
@@ -10,10 +10,6 @@ jQuery(document).ready(function($){
     $('#alert-modal').modal();
   }
   /* ---------- */
-
-
-
-   
 
   /* Checking if empty */
    function checkInput() {
@@ -35,15 +31,18 @@ jQuery(document).ready(function($){
    
     e.preventDefault();
     var action = form.attr('action');
+    var formData = new FormData(form[0]);
     checkInput();    
 
-    if (error == 0){ 
-      $this = $(this);
+    if (error == 0){       
       $.ajax({ // обработчик событий
         type: "POST", // отправляет  данные на сервер
         dataType: "json",
         url: action, // в качетсве ссылки мы используем заданный в аттребуте action путь
-        data: $this.serialize(), // данные берем из формы, преобразовываем их в текст 
+        data: formData, // данные берем из формы, преобразовываем их в текст 
+        processData: false,
+        contentType: false,
+
         beforeSend: function() {// данный обработчик будет вызван перед отправкой данного AJAX-запроса
           $('button[type=submit]').prop( 'disabled', true );
         },
@@ -63,8 +62,8 @@ jQuery(document).ready(function($){
                 alert_modal(response.alert);
                 $('#alert-modal').on('hidden.bs.modal', function () { 
                   /* паразегрузка, чтобы рэндомное значение изменилось */
-                  location.reload(true);
-                  localStorage.clear();
+                  form[0].reset();
+                  location.reload();
                 });
               }
               if (response.error){

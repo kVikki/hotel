@@ -12,7 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!--   <meta name="keywords" content="" />
     <meta name="author" content="" /> -->
-    
+    <!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+     -->
 	<?php wp_head(); ?>
   <script>
 		 var theme_path = '<?=  get_template_directory_uri();?>';
@@ -26,20 +27,23 @@
         <div class="row align-items-center">
           <div class="col-6 col-lg-4 site-logo" data-aos="fade">
             <a href="<?=home_url(); ?>"><?= the_field('logo_link', pll_current_language('slug')); ?></a>
-            <ul class=" custom-breadcrumbs">
-              <?php 
-                $args=array(
-                  'show_flags'=>1,
-                  'force_home' =>0,
-                  'show_names'=>0
-                );
-                pll_the_languages($args);
-              ?>
-            </ul>
+            
 
           </div>
           <div class="col-6 col-lg-8">
-
+            <div class="polylang-bar ">
+              <ul class="custom-breadcrumbs">
+                  <?php 
+                    $args=array(
+                      'show_flags'=> 1,
+                      'force_home' => 0,
+                      'show_names'=> 0
+                    );
+                    pll_the_languages($args);
+                  ?>
+              </ul>
+            </div>
+            
             <div class="site-menu-toggle js-site-menu-toggle" data-aos="fade">
               <span></span>
               <span></span>

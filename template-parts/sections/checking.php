@@ -17,7 +17,7 @@
     <div class="row check-availabilty" >
       <div class="block-32" data-aos="fade-up" data-aos-offset="-200">
 
-        <form id="check" action="<?= admin_url('admin-ajax.php?action=checking')?>"  method="post">
+        <form id="check" name="check" action="<?= admin_url('admin-ajax.php?action=checking')?>"  method="post">
           <div class="row">
             <div class="col-md-6 mb-3 mb-lg-0 col-lg-3">
               <label for="checkin_date" class="font-weight-bold text-black ">

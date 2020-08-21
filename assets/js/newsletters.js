@@ -33,6 +33,7 @@ jQuery(document).ready(function($){
               $('input[name='+index+'],textarea[name='+index+']').after('<div class="wrong-input">'+ value+ '</div>');
               console.log(response.error);
             });
+            form[0].reset();
           }
         }
       },

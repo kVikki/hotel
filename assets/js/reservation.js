@@ -57,7 +57,7 @@ jQuery(document).ready(function($){
     $('.wrong-input').remove();
     e.preventDefault();// предотвращаем поведение браузера по умолчанию
     var action = form.attr('action');
-    
+    var formData = new FormData(form[0]);
     checkInput();    
     
     if (error == 0){ 
@@ -66,7 +66,9 @@ jQuery(document).ready(function($){
 				type: "POST", // отправляет  данные на сервер
 				url: action, // в качетсве ссылки мы используем заданный в аттребуте action путь
         dataType: "json",
-        data: $this.serialize(), // данные берем из формы, преобразовываем их в текст 
+        data: formData, // данные берем из формы, преобразовываем их в текст 
+        processData: false,
+        contentType: false,
         beforeSend: function() {// данный обработчик будет вызван перед отправкой данного AJAX-запроса
           $('button[type=submit]').prop( 'disabled', true );
         },

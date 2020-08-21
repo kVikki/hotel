@@ -125,6 +125,29 @@ if( function_exists('acf_add_options_page') ):
 
 endif;
 
+/* polylang */
+add_action( 'plugins_loaded', function() {  
+	define( 'PLL_COOKIE', false ); 
+	define( 'PLL_FILTER_HOME_URL', false ); 
+	
+}, 0 );
+
+
+/* типа кэширую переменные */
+add_action('init', 'notification');
+function notification($field_name){
+	
+	if( wp_cache_get($field_name) === false ):
+		// кэша нет
+		$message = get_field($field_name,pll_current_language('slug'));
+		// добавляем данные в кэш		
+		wp_cache_add( $field_name, $message );	
+	endif;
+	$message = wp_cache_get( $field_name);
+
+	return $message;
+}
+
 
 /* обрабатываем вводимые в формы данные  */
 if( !function_exists('test_input') ): 
@@ -142,14 +165,11 @@ add_action('wp_ajax_newsletters', 'newsletters');
 add_action('wp_ajax_nopriv_newsletters', 'newsletters');
 function newsletters(){
 	
-	$validation_error = array();
-		
+	$validation_error = array();		
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
-		global $wpdb; 
-		$wrong_email = get_field('wrong_email', pll_current_language('slug'));
-		$existing_email = get_field('existing_email', pll_current_language('slug'));
-		$unexisting_field = get_field('unexisting', pll_current_language('slug'));
+		global $wpdb; 		
+
 		$email_pattern = '/^([a-z0-9_\.-])+@[a-z0-9-]+\.([a-z]{2,4}\.)?[a-z]{2,4}$/';
 		
 			if(isset($_POST['email_newsletters'])):
@@ -161,13 +181,13 @@ function newsletters(){
 					)); 
 							
 					if ($db_emails):			
-						$validation_error['email_newsletters']= $existing_email;				
+						$validation_error['email_newsletters']= notification('existing_email');				
 					endif;
-					else:			
-					$validation_error['email_newsletters'] = $wrong_email;
+				else:			
+					$validation_error['email_newsletters'] = notification('wrong_email');
 				endif;
 			else: 
-				$validation_error['email_newsletters']= $unexisting_field;
+				$validation_error['email_newsletters']= notification('unexisting');
 			endif;
 
 			
@@ -192,7 +212,7 @@ function newsletters(){
 
 					wp_die(json_encode(array('success' => true, 'alert'=> $alert_message , 'data' => $message_send)));
 				else: 					
-					$alert_message = get_field('sending_fail',pll_current_language('slug'));
+					$alert_message = notification('sending_fail');
 					wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 				endif;
 			
@@ -202,8 +222,6 @@ function newsletters(){
 
 	endif;
 }
-
-/*  */
 
 
 // форма проверки доступности дат бронирования
@@ -215,20 +233,15 @@ function checking(){
 	  	
 	$validation_error = array();
 	$data=array();
-	if ($_SERVER["REQUEST_METHOD"] == "POST"):
-		$wrong_date = get_field('wrong_date',pll_current_language('slug'));
-		$before_today = get_field('before_today_date',pll_current_language('slug'));
-		$unexisting_field =  get_field('unexisting',pll_current_language('slug'));
-		$available_dates_alert = get_field('available_alert',pll_current_language('slug'));
-		$unavailable_dates_alert = get_field('unavailable_alert',pll_current_language('slug'));
-		$url= get_field('reservation_link', pll_current_language('slug'));
+	$unexisting_field = notification('unexisting');
+	if ($_SERVER["REQUEST_METHOD"] == "POST"):		
 	
 			if(isset($_POST['checkin_date'])):
 				$checkin_date = test_input($_POST['checkin_date']);	
 				$check_in_date = DateTime::createFromFormat('j M, Y', $checkin_date);
 				$check_in_date=$check_in_date->format('Ymd');
 				if ($check_in_date < $today ): 
-					$validation_error['checkin_date']= $before_today;
+					$validation_error['checkin_date']= notification('before_today_date');
 				endif;
 			else: 
 				$validation_error['checkin_date']= $unexisting_field;
@@ -239,14 +252,14 @@ function checking(){
 				$check_out_date = DateTime::createFromFormat('j M, Y', $checkout_date);
 				$check_out_date=$check_out_date->format('Ymd');		
 				if ($check_out_date < $today): 
-						$validation_error['checkout_date']=$before_today;			
+						$validation_error['checkout_date']= notification('before_today_date');			
 				endif;								
 			else: 
 				$validation_error['checkout_date']= $unexisting_field;
 			endif;
 
 			if ($check_in_date > $check_out_date ): 
-				$validation_error['checkout_date']= $wrong_date;			
+				$validation_error['checkout_date']= notification('wrong_date');			
 			endif;
 
 			if(isset($_POST['adults']) ):
@@ -272,12 +285,12 @@ function checking(){
 					$available =  $_POST['available'];
 					if ($available==0):
 						wp_die(json_encode(array('success' => false,
-																			'alert'=> $unavailable_dates_alert)));
+																			'alert'=> notification('unavailable_alert'))));
 					else:						
 						wp_die(json_encode(array('success' => true,
-																			'alert'=> $available_dates_alert,																		
+																			'alert'=> notification('available_alert'),																		
 																			'data' => $data,
-																			'url'=> $url
+																			'url'=> notification('reservation_link')
 																		)));
 					endif;	
 				endif; 
@@ -296,16 +309,10 @@ function reservation(){
 	$validation_error = array();
 		
 	if ($_SERVER["REQUEST_METHOD"] === "POST"):
-		$wrong_date = get_field('wrong_date',pll_current_language('slug'));
-    $before_today = get_field('before_today_date',pll_current_language('slug'));
-    $unexisting_field =  get_field('unexisting',pll_current_language('slug'));
-    $available_dates_alert = get_field('available_alert',pll_current_language('slug'));
-    $unavailable_dates_alert = get_field('unavailable_alert',pll_current_language('slug'));
-    $wrong_email = get_field('wrong_email',pll_current_language('slug'));
-    $wrong_input = get_field('wrong_input',pll_current_language('slug'));
-    $wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
-    $url= get_field('reservation_link', pll_current_language('slug'));
-	
+		global $wpdb;
+		
+		$unexisting_field = notification('unexisting');
+		
     $today = date('Ymd');
   
     $phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
@@ -318,7 +325,7 @@ function reservation(){
 			$check_in_date = DateTime::createFromFormat('j M, Y', $checkin_date);
 			$check_in_date=$check_in_date->format('Ymd');
 			if ($check_in_date < $today ): 
-				$validation_error['checkin_date']= $before_today;
+				$validation_error['checkin_date']= notification('before_today_date');
 			endif;
 		else: 
 			$validation_error['checkin_date']= $unexisting_field;
@@ -329,14 +336,14 @@ function reservation(){
 			$check_out_date = DateTime::createFromFormat('j M, Y', $checkout_date);
 			$check_out_date=$check_out_date->format('Ymd');		
 			if ($check_out_date < $today): 
-					$validation_error['checkout_date']=$before_today;			
+					$validation_error['checkout_date']=notification('before_today_date');		
 			endif;								
 		else: 
 			$validation_error['checkout_date']= $unexisting_field;
 		endif;
 
 		if ($check_in_date > $check_out_date ): 
-			$validation_error['checkout_date']= $wrong_date;			
+			$validation_error['checkout_date']= notification('wrong_date');		
 		endif;
 
 		if(isset($_POST['adults']) ):
@@ -355,7 +362,7 @@ function reservation(){
 		if(isset($_POST['email'])):
 			$email = test_input($_POST['email']);
 			if (!preg_match( $email_pattern,$email)):
-				$validation_error['email'] = $wrong_email;
+				$validation_error['email'] = notification('wrong_email');
 			endif;
 		else :
 			$validation_error['email'] = $unexisting_field;
@@ -364,7 +371,7 @@ function reservation(){
 		if(isset($_POST['name'])):
 			$name = test_input($_POST['name']);
 			if (!preg_match( $text_pattern,$name)):
-				$validation_error['name'] = $wrong_input;
+				$validation_error['name'] = notification('wrong_input');
 			endif;
 		else :
 			$validation_error['name'] = $unexisting_field;
@@ -373,7 +380,7 @@ function reservation(){
 		if(isset($_POST['phone'])):
 				$phone = test_input($_POST['phone']);
 			if (!preg_match( $phone_pattern,$phone)):
-				$validation_error['phone'] = $wrong_phone;
+				$validation_error['phone'] = notification('wrong_phone');
 			endif;
 		else: 
 			$validation_error['phone'] = $unexisting_field;
@@ -382,7 +389,7 @@ function reservation(){
 		if(isset($_POST['message'])):
 				$message = test_input($_POST['message']);
 			if ($message!='' && !preg_match( $text_pattern,$message)):
-				$validation_error['message'] = $wrong_input;
+				$validation_error['message'] = notification('wrong_input');
 			endif;
 		else: 
 			$validation_error['message'] = $unexisting_field;
@@ -394,13 +401,16 @@ function reservation(){
 									'Email: ' .$email. "\n" . 
 									'Phone: ' .$phone. "\n";
 
-		$message_send = 'Subject:' .$subject. "\n" .
-										'Checkin:'. $checkin_date."\n" .
-										'Checkout:'. $checkout_date."\n" .
-										'Adults:'. $adults."\n" .
-										'Children:'.$children."\n" .
-										$sender_info;
+		$reservation_info = 'Checkin:'. $checkin_date."\n" .
+												'Checkout:'. $checkout_date."\n" .
+												'Adults:'. $adults."\n" .
+												'Children:'.$children."\n" .
+												'Notes:'.$message."\n" .
+												$sender_info;
 
+		$message_send = 'Subject:' .$subject. "\n" .
+											$reservation_info;
+		
 		
 			$to = get_option('admin_email');
 
@@ -408,12 +418,33 @@ function reservation(){
 				
 					$booking = wp_mail( $to,	$subject , $message_send );
 					if ($booking):
-						$alert_message = get_field('sending_success',pll_current_language('slug'));
+						$alert_message = notification('sending_success');
+					
+							/* creating a reservation post */
+							$new_reservation = array(
+								'post_title' => $checkin_date.'-'. $checkout_date,
+								'post_content' => $reservation_info,
+								'post_status' => 'publish',
+								'post_date' => date('Y-m-d H:i:s'),							
+								'post_type' => 'reservation'
+							);
+							wp_insert_post($new_reservation);	
+							/* ----------- */	
+							
+							$wpdb->query(
+								$wpdb->prepare(
+									"INSERT INTO wp_reservation (check_in, check_out, adults, children, sender_name, phone,  email, notes)
+													VALUES ( %s,  %s,  %s,  %s, %s, %s,  %s, %s)",
+													$checkin_date, $checkout_date, $adults, $children, $name, $phone,  $email, $message	)
+							); 
+
+
+
 						wp_die(json_encode(array('success' => true, 
 																		'alert'=> $alert_message,
 																		'data' => $message_send)));
 					else: 
-						$alert_message = get_field('sending_fail',pll_current_language('slug'));
+						$alert_message = notification('sending_fail');
 						wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 					endif;
  				
@@ -426,7 +457,6 @@ function reservation(){
 }
 
 
-
 // форма отправки сообщений
 add_action('wp_ajax_send_mail', 'send_mail');
 add_action('wp_ajax_nopriv_send_mail', 'send_mail');
@@ -435,10 +465,8 @@ function send_mail(){
 	$validation_error = array();
 	
 	if ($_SERVER["REQUEST_METHOD"] == "POST"):
-		$wrong_phone = get_field('wrong_phone',pll_current_language('slug'));
-		$wrong_email = get_field('wrong_email',pll_current_language('slug'));
-		$wrong_input = get_field('wrong_input',pll_current_language('slug'));
-		$unexisting_field = get_field('unexisting',pll_current_language('slug'));
+
+		$unexisting_field = notification('unexisting');
 
 		$text_pattern = '/[A-Za-zА-Яа-я]{2,}/';
 		$phone_pattern = '/^([+]?|[0]{0,2})?(-|\s|\.)?\d*(-|\s|\.)?[(]?[0-9]{1,4}[)]?(-|\s|\.)?[(]?[0-9]{2,4}[)]?[-\s\.0-9]{7,}$/';
@@ -447,7 +475,7 @@ function send_mail(){
 			if(isset($_POST['email'])):
 				$sender_email = test_input($_POST['email']);
 				if (!preg_match($email_pattern, $sender_email)):
-					$validation_error['email'] = $wrong_email;
+					$validation_error['email'] = notification('wrong_email');
 				endif;
 			else: 
 				$validation_error['email']= $unexisting_field;
@@ -456,7 +484,7 @@ function send_mail(){
 			if(isset($_POST['name'])):
 				$sender_name = test_input($_POST['name']);
 				if (!preg_match($text_pattern, $sender_name)):
-					$validation_error['name'] = $wrong_input ;
+					$validation_error['name'] = notification('wrong_input');
 				endif;
 			else:
 				$validation_error['name'] = $unexisting_field;
@@ -465,7 +493,7 @@ function send_mail(){
 			if(isset($_POST['phone'])):
 				$sender_phone = test_input($_POST['phone']);
 				if (!preg_match($phone_pattern, $sender_phone)):
-					$validation_error['phone'] = $wrong_phone ;
+					$validation_error['phone'] = notification('wrong_phone');
 				endif;
 			else:
 				$validation_error['phone'] = $unexisting_field;
@@ -475,21 +503,21 @@ function send_mail(){
 			if(isset($_POST['message'])):
 				$message = test_input($_POST['message']);
 				if(!preg_match($text_pattern, $message)):
-					$validation_error['message'] = $wrong_input;
+					$validation_error['message'] = notification('wrong_input');
 				endif;
 			else :
 				$validation_error['message'] = $unexisting_field;
 			endif;
 			
 
-			$subject = get_field('contact_subject',pll_current_language('slug'));
+			$subject = get_field('contact_subject', pll_current_language('slug'));
 			$message_send = 'Message:'. $message . "\n" .
 											'Subject: '. $subject."\n" .
 											'Name: '. $sender_name."\n" .
 											'Email: ' .$sender_email. "\n".
 											'Phone:' . $sender_phone. "\n";
 
-			$alert_message = get_field('sending_success',pll_current_language('slug'));
+			$alert_message = notification('sending_success');
 			
 
 			$to = get_option('admin_email');
@@ -500,7 +528,7 @@ function send_mail(){
 				if ($mail):
 					wp_die(json_encode(array('success' => true, 'alert'=> $alert_message , 'data' => $message_send)));
 				else: 
-					$alert_message = get_field('sending_fail',pll_current_language('slug'));
+					$alert_message = notification('sending_fail');
 					wp_die(json_encode(array('success' => false, 'alert'=> $alert_message)));
 				endif;
 			
@@ -539,7 +567,7 @@ function event_posts_init(){
 			'view_item'          => 'Подивитися',
 			'search_items'       => 'Знайти ',
 			'not_found'          => 'Події не знайдено',
-			'not_found_in_trash' => 'В корзині подій не знайдено',
+			'not_found_in_trash' => 'В кошику подій не знайдено',
       'menu_name'          => 'Події'
 
 		  ),
@@ -554,11 +582,9 @@ function event_posts_init(){
 		'hierarchical'       => false,
 		'menu_icon' 				 => 'dashicons-calendar-alt',
 		'menu_position'      => 6,
-		'taxonomies'         => array( 'category',  'post_tag' ),
 		'supports'           => array( 'title', 'editor' ,'thumbnail', 'excerpt', 'comments')
 	) );
 }
-
 
 add_action('init', 'room_posts_init');
 function room_posts_init(){
@@ -573,7 +599,7 @@ function room_posts_init(){
 			'view_item'          => 'Переглянути ',
 			'search_items'       => 'Знайти ',
 			'not_found'          => 'Номерів не знайдено',
-			'not_found_in_trash' => 'В корзині номерів не знайдено',
+			'not_found_in_trash' => 'В кошику номерів не знайдено',
       'menu_name'          => 'Кімнати/Номери'
 
 		  ),
@@ -587,8 +613,7 @@ function room_posts_init(){
 		'has_archive'        => true,
 		'hierarchical'       => false,
 		'menu_icon' 				 => 'dashicons-admin-multisite',
-		'menu_position'      => 7,
-		'taxonomies'         => array( 'category',  'post_tag' ),
+		'menu_position'      => 7,		
 		'supports'           => array( 'title', 'editor' ,'thumbnail', 'excerpt', 'comments')
 	) );
 }
@@ -606,23 +631,62 @@ function testimonial_posts_init(){
 			'view_item'          => 'Переглянути ',
 			'search_items'       => 'Знайти ',
 			'not_found'          => 'Відгуків не найдено',
-			'not_found_in_trash' => 'В корзине відгуків не найдено',
+			'not_found_in_trash' => 'В кошику відгуків не найдено',
       'menu_name'          => 'Відгуки'
 
 		  ),
-		'public'             => true,
-		'publicly_queryable' => true,
-		'show_ui'            => true,
-		'show_in_menu'       => true,
-		'query_var'          => true,
-		'rewrite'            => true,
-		'capability_type'    => 'post',
-		'has_archive'        => true,
-		'hierarchical'       => false,
-		'menu_icon' 				 => 'dashicons-testimonial',
-		'menu_position'      => 8,
-		'taxonomies'         => array( 'category',  'post_tag' ),
-		'supports'           => array( 'title', 'editor' ,'excerpt','thumbnail' )
+			'public'             => true,
+			'publicly_queryable' => true,
+			'show_ui'            => true,
+			'show_in_menu'       => true,
+			'query_var'          => true,
+			'rewrite'            => true,
+			'capability_type'    => 'post',
+			'has_archive'        => true,
+			'hierarchical'       => false,
+			'menu_icon' 				 => 'dashicons-testimonial',
+			'menu_position'      => 8,
+			'supports'           => array( 'title', 'editor' ,'excerpt','thumbnail' )
+	
 	) );
 }
+
+/* данные формы регистрации */
+add_action('init', 'reservation_init');
+function reservation_init(){
+	register_post_type('reservation', array(
+			'labels'             => array(
+			'name'               => 'Резервування', // Основное название типа записи
+			'singular_name'      => 'Резервування', // отдельное название записи типа 
+			'add_new'            => 'Додати нове',
+			'add_new_item'       => 'Додати нове резервування',
+			'edit_item'          => 'Редагувати',
+			'new_item'           => 'Нове резервування',
+			'view_item'          => 'Переглянути ',
+			'search_items'       => 'Знайти ',
+			'not_found'          => 'Резервувань не найдено',
+			
+			'not_found_in_trash' => 'В кошику резервувань не найдено',
+      'menu_name'          => 'Резервування'
+		  ),	
+
+
+		'public'             => true,
+		'publicly_queryable' => false,
+		'exclude_from_search'=> true,
+		'show_ui'            => true,
+		'show_in_menu'       => true,		
+		'query_var'          => false,
+		'rewrite'            => false,
+		'capability_type'    => 'post',
+		'has_archive'        => false,
+		'hierarchical'       => false,
+		'menu_icon' 				 => 'dashicons-book-alt',
+		'menu_position'      => 9,
+		'supports'           => array( 'title', 'editor' )
+	) );
+}
+
+
+
 
